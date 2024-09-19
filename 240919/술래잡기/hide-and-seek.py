@@ -58,6 +58,7 @@ tree = [[0]*N for _ in range(N)]
 runner = []
 route = []
 d_by_route = []
+d_by_route2 = []
 dir = (-1, 0),(0, 1), (1, 0), (0, -1) #상 / 우 / 하 / 좌 (1, 2그대로 유지! )
 answer = 0
 
@@ -79,6 +80,7 @@ l = 1
 cnt = 0
 route.append((r,c))
 d_by_route.append(0)
+d_by_route2.append(0)
 d = 0
 while 1:
     di, dj = dir[d]
@@ -87,6 +89,8 @@ while 1:
         c += dj
         route.append((r, c))
         d_by_route.append(d)
+        d_by_route2.append((d+2)%4)
+
         if r==0 and c==0:
             break
 
@@ -99,6 +103,7 @@ while 1:
     d_by_route[-1] = d
     if r==0 and c==0:
         d_by_route[-1] = 2
+        d_by_route2[-1] = 2
         break
 ######################달팽이 확인 완
 # print(route)
@@ -122,31 +127,21 @@ idx = 0
 r = 1
 
 for k in range(1, K+1):
-    if not runner:
-        break
-    # print(f"==================={k}===================")
+
     cr, cc = route[idx]
     d = d_by_route[idx]
-    # print("시작 cr , cc ", cr, cc)
-    # print("술래 방향 : ", dir[d])
+
     new_arr = [[[] for _ in range(N)] for _ in range(N)]
     new_runner = []
     runner_idx = 0
-    # print("==========도망치기 전 ===================")
-    # for i in range(N):
-    #     print(arr[i])
-    # print()
+
     for i,j,run_d in runner:
-        # print("runner ")
-        # print(i, j, run_d)
         if i== -1 and j==-1:
             continue
 
-
-        #움직임 가능성 체크
+        # 움직임 가능성 체크
         dist = get_distance(i, j, cr, cc)
         if dist > 3:
-            # print("그대로 반영")
             new_runner.append([i, j, run_d])
             new_arr[i][j].append(runner_idx)
             runner_idx += 1
@@ -161,7 +156,7 @@ for k in range(1, K+1):
 
 
         # dist = get_distance(du, dv, cr, cc)
-        # if dist > 4:
+        # if dist > 3:
         #     # print("그대로 반영")
         #     new_runner.append([du, dv, run_d])
         #     new_arr[i][j].append(runner_idx)
@@ -190,19 +185,18 @@ for k in range(1, K+1):
     #     print(arr[i])
     # print()
     #술래 옮기기
+    idx += r
+    #술래의 옮긴 위치와 방향
+    cr, cc = route[idx]
+    if r==-1:
+        di, dj = dir[d_by_route2[idx]]
+    else:
+        di, dj = dir[d_by_route[idx]]
+
     if idx == N*N -1 and r==1:
         r*= -1
     elif idx == 0 and r==-1:
         r*= -1
-    idx += r
-    #술래의 옮긴 위치와 방향
-    cr, cc = route[idx]
-    di, dj = dir[d_by_route[idx]]
-    # print("술래 이동 후 ============================")
-    # print("cr, cc " , cr, cc)
-    # print(di, dj)
-    # print("===================")
-
     catch = 0
 
     # du, dv = cr, cc
@@ -224,3 +218,6 @@ for k in range(1, K+1):
 
     answer += k*catch
 print(answer)
+# print(route)
+# print(d_by_route)
+# print(len(d_by_route))
