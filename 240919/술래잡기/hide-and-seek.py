@@ -53,7 +53,7 @@ def get_distance(i, j, x, y):
 #인덱스 1부터 시작하니까 꼭 1 빼기 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 N, M, H, K = map(int, input().split())
 
-arr = [[-1]*N for _ in range(N)]
+arr = [[[] for _ in range(N)] for _ in range(N)]
 tree = [[0]*N for _ in range(N)]
 runner = []
 route = []
@@ -62,10 +62,10 @@ dir = (-1, 0),(0, 1), (1, 0), (0, -1) #상 / 우 / 하 / 좌 (1, 2그대로 유�
 answer = 0
 
 #도망자 입력 받기
-for i in range(1, M+1):
+for i in range(M):
     x, y, d = map(int, input().split())
     runner.append([x-1, y-1, d])
-    arr[x-1][y-1] = i
+    arr[x-1][y-1].append(i)
 
 for j in range(H):
     x, y = map(int, input().split())
@@ -124,18 +124,14 @@ r = 1
 for k in range(1, K+1):
     cr, cc = route[idx]
     d = d_by_route[idx]
-    new_arr = [[-1]*N for _ in range(N)]
+    new_arr = [[[] for _ in range(N)] for _ in range(N)]
     new_runner = []
+    runner_idx = 0
     for i,j,run_d in runner:
-
-        if arr[i][j] == -1:
+        if i== -1 and j==-1:
             continue
         #움직임 가능성 체크
-        dist = get_distance(i, j, cr, cc)
-        if dist>3:
-            new_runner.append([i, j, run_d])
-            new_arr[i][j] = d
-            continue
+        # print("dist : ", dist)
         #움직이는 도망자라면
         di, dj = dir[run_d]
         du = i+di
@@ -144,38 +140,62 @@ for k in range(1, K+1):
             run_d = (run_d+2)%2
             du -= di*2
             dv -= dj*2
-        if du == cr and dv == cc: #움직이지 않는다
-            new_arr[i][j] = run_d
+        dist = get_distance(du, dv, cr, cc)
+        # print("술래 위치는? " , cr, cc)
+        if dist>3 or du == cr and dv == cc:
+            # print("그대로 반영")
             new_runner.append([i, j, run_d])
+            new_arr[i][j].append(runner_idx)
+            runner_idx+= 1
+            continue
+        # if : #움직이지 않는다
+        #     new_arr[i][j].append(runner_idx)
+        #     runner_idx+=1
+        #     new_runner.append([i, j, run_d])
+        #     print("안움직였다 ")
         else: #움직였다
-            new_arr[du][dv] = run_d
+            # print("움직였다")
+            new_arr[du][dv].append(runner_idx)
+            runner_idx+=1
             new_runner.append([du, dv, run_d])
 
     #옮긴 도망자 원본 배열에 다시 반여하기
     for i in range(N):
-        arr[i] = new_arr[i][:]
+        for j in range(N):
+            arr[i][j] = new_arr[i][j][:]
     runner = new_runner[:]
-
+    # print("==========도망친 후 ===================")
+    # for i in range(N):
+        # print(arr[i])
+    # print()
     #술래 옮기기
-    if idx == N*N -1:
+    if idx == N*N -1 and r==1:
+        r*= -1
+    elif idx == 0 and r==-1:
         r*= -1
     idx += r
-
     #술래의 옮긴 위치와 방향
     cr, cc = route[idx]
     di, dj = dir[d_by_route[idx]]
 
-    catch = 0
-    while 1:
-        cr += di
-        cc += dj
-        if oob(cr, cc):
-            break
-        if tree[cr][cc]:
-            continue
-        if arr[cr][cc]!=-1:
-            catch +=1
-            arr[cr][cc] = -1
-    answer += k*catch
 
+    catch = 0
+
+    # du, dv = cr, cc
+    for t in range(3):
+        du = cr + di*t
+        dv = cc + dj*t
+
+        if oob(du, dv):
+            break
+        if tree[du][dv]:
+            continue
+        if arr[du][dv]:
+            for u in arr[du][dv]:
+                catch +=1
+                runner[u] = [-1, -1, 0]
+            # print("잡앗다 !!!!!!!!!!!!!!!!!!", catch)
+
+
+    answer += k*catch
 print(answer)
