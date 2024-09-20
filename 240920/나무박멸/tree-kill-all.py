@@ -49,6 +49,7 @@ for m in range(M):
                     if arr[du][dv]>0:
                         cnt+=1
                 arr[i][j] += cnt
+    # print("==============성장확인")
     # print_arr()
     ##############체크 완
 
@@ -59,7 +60,7 @@ for m in range(M):
     spread_lst = []
     for i in range(N):
         for j in range(N):
-            if arr[i][j]>0:
+            if arr[i][j]>0 and not visited[i][j]:
                 cnt =0
                 lst = []
 
@@ -80,16 +81,24 @@ for m in range(M):
 
     # print("=============번식확인=================")
     # print_arr()
-    ############################확인 완
+    # ############################확인 완
+    # print('===============이 때 제초제 ================')
+    # for i in range(N):
+    #     print(visited[i])
+    # print()
 
     kill_lst = []
     #제초제 뿌릴 후보 찾자
     for i in range(N):
         for j in range(N):
+            if arr[i][j]== -1:
+                continue
+            # if visited[i][j]:
+            #     continue
             lst = []
-            kill_cnt = arr[i][j] if arr[i][j] >0 else 0 #나무 있는 칸이면 나무개수 아니면 0
+            kill_cnt = arr[i][j] #나무 있는 칸이면 나무개수 아니면 0
             lst.append((i, j))
-            if arr[i][j] <=0:
+            if arr[i][j] ==0:
                 kill_lst.append((kill_cnt, i, j, lst))
                 continue
             for di, dj in diagonal:
@@ -98,11 +107,11 @@ for m in range(M):
                 for k in range(K):
                     du += di
                     dv += dj
-                    if oob(du, dv): continue
-                    if arr[du][dv] !=-1 and arr[du][dv] !=0: #나무가 있는 칸이면
+                    if oob(du, dv) or arr[du][dv]==-1: break
+                    if arr[du][dv] !=-1 and arr[du][dv] !=0 and not visited[du][dv]: #나무가 있는 칸이면
                         kill_cnt += arr[du][dv]
                     lst.append((du, dv))
-                    if arr[du][dv]==-1 or arr[du][dv]==0:#벽이거나 나무가 없으면 이 칸까지만 하고 끝
+                    if arr[du][dv]==-1 or arr[du][dv]==0 or visited[du][dv]:#벽이거나 나무가 없으면 이 칸까지만 하고 끝
                         break
             kill_lst.append((kill_cnt, i, j, lst))
 
@@ -112,18 +121,19 @@ for m in range(M):
     #     print(t)
     # print("========================================================")
 
+
     # 제초제 감소
     for i in range(N):
         for j in range(N):
             if visited[i][j]:
-                visited[i][j]-= 1
-
+                visited[i][j] -= 1
 
     # 제초제 뿌리기 : C로 갱신하기 위해 감소부터 해준다
     for i, j in kill_lst[0][3]:
         visited[i][j] = C
         arr[i][j] = 0
-
+    # print("제초제 이후 =================")
+    # print_arr()
     answer += kill_lst[0][0]
 
 print(answer)
