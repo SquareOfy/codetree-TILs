@@ -161,7 +161,9 @@ for k in range(K):
 
 
     r, c = throw_ball(k%(4*N))
-    score = find(r, c)
-    answer += score **2
+    if r!=-1 and c!=-1:
+        score = find(r, c)
+        # print(score)
+        answer += score **2
 
 print(answer)
