@@ -86,21 +86,23 @@ def throw_ball(round):
         for j in range(N):
             if arr[row][j] !=0 and arr[row][j] != 4:
                 return (row, j)
-
     elif round in range(N, 2*N):
         col = round%N
+
         for i in range(N-1, -1, -1):
             if arr[i][col] !=0 and arr[i][col] != 4:
                 return (i, col)
 
     elif round in range(2*N, 3*N):
         row = N-1 - round%N
+
         for j in range(N-1, -1, -1):
             if arr[row][j] !=0 and arr[row][j] != 4:
                 return (row, j)
 
-    elif round in range(3*N):
+    elif round in range(3*N, 4*N):
         col = N-1 - round%N
+
         for i in range(N):
             if arr[i][col] != 0 and arr[i][col] != 4:
                 return (i, col)
@@ -110,8 +112,18 @@ def find(r, c):
     result = -1
     for m in range(M):
         if (r,c ) in team[m]:
-            result = team[m].index((r, c))+1
+            for j in range(len(team[m])):
+                point = team[m][j]
+                if point==(r,c):
+                    result = j+1
+                    break
+
             team[m].reverse()
+            hr, hc = team[m][0]
+            tr, tc = team[m][-1]
+            arr[hr][hc] = 1
+            arr[tr][tc] = 3
+
             return result
 
 N, M, K = map(int, input().split())
@@ -178,7 +190,7 @@ for k in range(K):
     # for i in range(M):
     #     print(team[i])
     ##########################완료
-    # print("================이동 후 arr===================")
+    # print(f"================이동 후 arr {k+1}===================")
     # for i in range(N):
     #     print(arr[i])
     # print()
@@ -186,11 +198,9 @@ for k in range(K):
     r, c = throw_ball(k%(4*N))
     # print("맞은 사람 위치 : " , r, c)
     # print("============team ============")
-    # for m in range(M):
-    #     print(team[m])
-    # print("===============================")
     if r!=-1 and c!=-1:
         score = find(r, c)
         answer += score **2
+
 
 print(answer)
