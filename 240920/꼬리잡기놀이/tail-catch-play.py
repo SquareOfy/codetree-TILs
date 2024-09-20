@@ -65,16 +65,18 @@ def bfs(r, c, team_num):
     while q:
         cr, cc = q.popleft()
         team[team_num].append((cr, cc))
+        num = arr[cr][cc]
         if arr[cr][cc] == 3:
             return
         for di, dj in dir:
             du = cr+di
             dv = cc+dj
 
-            if oob(du, dv) or visited[du][dv] or arr[du][dv] ==0 or arr[du][dv]==4:
+            if oob(du, dv) or visited[du][dv]:
                 continue
-            visited[du][dv] = 1
-            q.append((du, dv))
+            if arr[du][dv] == num or arr[du][dv] == num+1:
+                visited[du][dv] = 1
+                q.append((du, dv))
 
 
 def throw_ball(round):
@@ -139,6 +141,8 @@ for k in range(K):
     for m in range(M):
         hr, hc = team[m][0]
         #머리 이동
+
+        blank_flag = False
         for di, dj in dir:
             nr, nc = hr+di, hc+dj
             if oob(nr, nc):
@@ -147,9 +151,25 @@ for k in range(K):
                 team[m].appendleft((nr, nc))
                 arr[nr][nc] = 1
                 arr[hr][hc] = 2
+                blank_flag = True
                 break
-        tr, tc = team[m].pop()
-        arr[tr][tc] = 4
+        if blank_flag:
+            tr, tc = team[m].pop()
+            arr[tr][tc] = 4
+
+        #꼬리로 이동해야 한다
+        else:
+            for di, dj in dir:
+                nr, nc = hr + di, hc + dj
+                if oob(nr, nc):
+                    continue
+                if arr[nr][nc] == 3:
+                    team[m].appendleft((nr, nc))
+                    arr[nr][nc] = 1
+                    arr[hr][hc] = 2
+                    break
+            team[m].pop() #꼬리 자리에 머리 자리가 왔으므로 arr은 안바꿈
+
 
         ntr, ntc = team[m][-1]
         arr[ntr][ntc] = 3 #이 풀이라면 굳이 필요없을 것 같긴 함
@@ -158,12 +178,19 @@ for k in range(K):
     # for i in range(M):
     #     print(team[i])
     ##########################완료
-
-
+    # print("================이동 후 arr===================")
+    # for i in range(N):
+    #     print(arr[i])
+    # print()
+    # print("=============================================")
     r, c = throw_ball(k%(4*N))
+    # print("맞은 사람 위치 : " , r, c)
+    # print("============team ============")
+    # for m in range(M):
+    #     print(team[m])
+    # print("===============================")
     if r!=-1 and c!=-1:
         score = find(r, c)
-        # print(score)
         answer += score **2
 
 print(answer)
