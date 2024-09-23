@@ -33,7 +33,9 @@ gun = [0]*(M+1)
 for i in range(N):
     lst = list(map(int, input().split()))
     for j in range(N):
-        arr[i][j].append(lst[j])
+        if lst[j] ==0: continue
+        heapq.heappush(arr[i][j], lst[j])
+        # arr[i][j].append(lst[j])
     # print(arr[i])
 
 
@@ -99,7 +101,8 @@ for k in range(K):
             # ?????????이동한 후 칸이군
 
             # 총내려놓기
-            heapq.heappush(arr[nx][ny], gun[loser])
+            if gun[loser]:
+                heapq.heappush(arr[nx][ny], gun[loser])
             gun[loser] = 0
 
             loser_d = player_dict[loser][2]
@@ -123,9 +126,10 @@ for k in range(K):
 
             # . 이긴 플레이어는 승리한 칸에 떨어져 있는 총들과 원래 들고 있던 총 중
             # 가장 공격력이 높은 총을 획득하고, 나머지 총들은 해당 격자에 내려 놓습니다.
-            mx_gun = heapq.heappop(arr[nx][ny])
-            heapq.heappush(arr[nx][ny], min(mx_gun, gun[winner]))
-            gun[winner] = max(mx_gun, gun[winner])
+            if arr[nx][ny]:
+                mx_gun = heapq.heappop(arr[nx][ny])
+                heapq.heappush(arr[nx][ny], min(mx_gun, gun[winner]))
+                gun[winner] = max(mx_gun, gun[winner])
 
 
 
@@ -151,6 +155,15 @@ for k in range(K):
         # for t in range(N):
         #     print(player_arr[t])
         # print()
+        # print("gun _ arr")
+        # for t in range(N):
+        #     print(arr[t])
+        # print()
+        # print("gun ")
+        # print(gun)
+        # print()
+        # print("point ")
+        # print(point)
         # print()
 
     # k 라운드 동안 게임을 진행하면서 각 플레이어들이 획득한 포인트
