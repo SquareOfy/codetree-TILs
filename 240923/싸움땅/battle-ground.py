@@ -34,14 +34,13 @@ for i in range(N):
     lst = list(map(int, input().split()))
     for j in range(N):
         if lst[j] ==0: continue
-        heapq.heappush(arr[i][j], lst[j])
-        # arr[i][j].append(lst[j])
+        # heapq.heappush(arr[i][j], lst[j])
+        arr[i][j].append(lst[j])
     # print(arr[i])
 
 
 #  m개의 줄에 걸쳐 플레이어들의 정보 x, y, d, s가 공백을 사이에 두고 주어집니다
 # (x, y)는 플레이어의 위치, d는 방향, s는 플레이어의 초기 능력치를 의미
-# 각 플레이어의 초기 능력치는 모두 다릅니다.
 #  방향 d는 0부터 3까지 순서대로 ↑, →, ↓, ←을 의미
 for i in range(1, M+1):
     x, y, d, s = map(int, input().split())
@@ -74,7 +73,8 @@ for k in range(K):
         # 만약 이동한 방향에 플레이어가 있는 경우에는 두 플레이어가 싸우게 됩니다.
         # 해당 플레이어의 초기 능력치와 가지고 있는 총의 공격력의 합을 비교하여 더 큰 플레이어가 이기게 됩니다
         # 만일 이 수치가 같은 경우에는 플레이어의 초기 능력치가 높은 플레이어가 승리하게 됩니다.
-        # 이긴 플레이어는 각 플레이어의 초기 능력치와 가지고 있는 총의 공격력의 합의 차이만큼을 포인트로 획득
+        # 각 플레이어의 초기 능력치는 모두 다릅니다.
+
         if player_arr[nx][ny]:
             # print("싸우자 ! ")
             enemy_num = player_arr[nx][ny]
@@ -93,21 +93,25 @@ for k in range(K):
                 loser = i
                 loser_d, loser_s = d, s
 
+            # 이긴 플레이어는 각 플레이어의 초기 능력치와 가지고 있는 총의 공격력의 합의 차이만큼을 포인트로 획득
 
             point[winner] += abs(enemy_power-my_power) #점수획득
 
             #  진 플레이어는 본인이 가지고 있는 총을 해당 격자에 내려놓고, 해당 플레이어가 원래 가지고 있던 방향대로 한 칸 이동합니다.
+            # 총내려놓기
+            if gun[loser]:
+                arr[nx][ny].append(gun[loser])
+                arr[nx][ny].sort()
+                # heapq.heappush(arr[nx][ny], gun[loser])
+            gun[loser] = 0
+
+
+
             # 만약 이동하려는 칸에 다른 플레이어가 있거나 격자 범위 밖인 경우에는
             # 오른쪽으로 90도씩 회전하여 빈 칸이 보이는 순간 이동합니다.
             #  해당 칸에 총이 있다면,
             #  해당 플레이어는 가장 공격력이 높은 총을 획득하고 나머지 총들은 해당 격자에 내려 놓습니다.
             # ?????????이동한 후 칸이군
-
-            # 총내려놓기
-            if gun[loser]:
-                heapq.heappush(arr[nx][ny], gun[loser])
-            gun[loser] = 0
-
             #회전하며 빈칸 탐색
             for t in range(4):
                 new_d = (loser_d+t)%4
@@ -124,12 +128,21 @@ for k in range(K):
                     gun[loser] = heapq.heappop(arr[nx+di][ny+dj])
                 # print("gun : ", gun)
                 break
+            # print("=========진 플레이어 총 내려놓음 ===============")
+            # print("gun _ arr")
+            # for t in range(N):
+            #     print(arr[t])
+            # print()
 
             # . 이긴 플레이어는 승리한 칸에 떨어져 있는 총들과 원래 들고 있던 총 중
             # 가장 공격력이 높은 총을 획득하고, 나머지 총들은 해당 격자에 내려 놓습니다.
+
             if arr[nx][ny]:
-                mx_gun = heapq.heappop(arr[nx][ny])
-                heapq.heappush(arr[nx][ny], min(mx_gun, gun[winner]))
+                # print(arr[nx][ny])
+                mx_gun = arr[nx][ny].pop()
+                # print(mx_gun)
+                if gun[winner]:
+                    heapq.heappush(arr[nx][ny], min(mx_gun, gun[winner]))
                 gun[winner] = max(mx_gun, gun[winner])
 
 
@@ -142,11 +155,13 @@ for k in range(K):
             if arr[nx][ny]:
                 # print("총 줍자 ")
                 if gun[i] == 0:
-                    gun[i] = heapq.heappop(arr[nx][ny])
+                    gun[i] = arr[nx][ny].pop()
                 else:
                     # print("바꿔치기")
-                    mx_gun = heapq.heappop(arr[nx][ny])
-                    heapq.heappush(arr[nx][ny], min(gun[i], mx_gun))
+                    mx_gun = arr[nx][ny].pop()
+                    arr[nx][ny].append(min(gun[i], mx_gun))
+                    arr[nx][ny].sort()
+                    # heapq.heappush(arr[nx][ny], min(gun[i], mx_gun))
                     gun[i] = max(mx_gun, gun[i])
             player_arr[nx][ny] = i
             player_dict[i] = (nx, ny, d, s)
