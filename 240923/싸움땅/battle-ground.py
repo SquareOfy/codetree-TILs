@@ -9,7 +9,6 @@ point = 플레이어별 획득한 포인트 ( 출력 배열)
 
 
 """
-import heapq
 
 def oob(x, y):
     return x<0 or y<0 or x>=N or y>=N
@@ -34,7 +33,6 @@ for i in range(N):
     lst = list(map(int, input().split()))
     for j in range(N):
         if lst[j] ==0: continue
-        # heapq.heappush(arr[i][j], lst[j])
         arr[i][j].append(lst[j])
     # print(arr[i])
 
@@ -102,7 +100,6 @@ for k in range(K):
             if gun[loser]:
                 arr[nx][ny].append(gun[loser])
                 arr[nx][ny].sort()
-                # heapq.heappush(arr[nx][ny], gun[loser])
             gun[loser] = 0
 
 
@@ -125,7 +122,7 @@ for k in range(K):
 
                 #가장 높은 총 얻기
                 if arr[nx+di][ny+dj]:
-                    gun[loser] = heapq.heappop(arr[nx+di][ny+dj])
+                    gun[loser] = arr[nx+di][ny+dj].pop()
                 # print("gun : ", gun)
                 break
             # print("=========진 플레이어 총 내려놓음 ===============")
@@ -142,7 +139,8 @@ for k in range(K):
                 mx_gun = arr[nx][ny].pop()
                 # print(mx_gun)
                 if gun[winner]:
-                    heapq.heappush(arr[nx][ny], min(mx_gun, gun[winner]))
+                    arr[nx][ny].append(min(mx_gun, gun[winner]))
+                    arr[nx][ny].sort()
                 gun[winner] = max(mx_gun, gun[winner])
 
 
@@ -161,7 +159,6 @@ for k in range(K):
                     mx_gun = arr[nx][ny].pop()
                     arr[nx][ny].append(min(gun[i], mx_gun))
                     arr[nx][ny].sort()
-                    # heapq.heappush(arr[nx][ny], min(gun[i], mx_gun))
                     gun[i] = max(mx_gun, gun[i])
             player_arr[nx][ny] = i
             player_dict[i] = (nx, ny, d, s)
