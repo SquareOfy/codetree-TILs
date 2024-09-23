@@ -86,9 +86,12 @@ for k in range(K):
                 loser = enemy_num
                 player_dict[i] = (nx, ny, d, s)
                 player_arr[nx][ny] = winner
+                loser_d = player_dict[loser][2]
+                loser_s = player_dict[loser][3]
             else:
                 winner = enemy_num
                 loser = i
+                loser_d, loser_s = d, s
 
 
             point[winner] += abs(enemy_power-my_power) #점수획득
@@ -105,15 +108,13 @@ for k in range(K):
                 heapq.heappush(arr[nx][ny], gun[loser])
             gun[loser] = 0
 
-            loser_d = player_dict[loser][2]
-            loswer_s = player_dict[loser][3]
             #회전하며 빈칸 탐색
             for t in range(4):
                 new_d = (loser_d+t)%4
                 di, dj = DIR[new_d]
                 if oob(nx+di, ny+dj) or player_arr[nx+di][ny+dj]:
                     continue
-                player_dict[loser] = (nx+di, ny+dj, new_d, loswer_s)
+                player_dict[loser] = (nx + di, ny + dj, new_d, loser_s)
                 player_arr[nx+di][ny+dj] = loser
                 # print("loser 정보 갱신 ", loser)
                 # print(player_dict[loser])
