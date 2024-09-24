@@ -178,22 +178,57 @@ for k in range(1, K+1):
     # print(er, ec)
     # print('===================================')
     # print("dist : ", dist)
-    if pr == er:
-        sr = max(er-dist+1, 0)
+    # if pr == er:
+    #     if er-dist+1<0:
+    #         sr = 0
+    #     else:
+    #         sr = er-dist+1
+    #
+    # else:
+    #     if min(pr, er)+dist-1<N
+    #
+    # if pc ==ec:
+    #     if ec-dist+1<0:
+    #         sc = 0
+    #     else:
+    #         sc = min(N-dist-1, ec-dist+1)
+    # else:
+    #     if min(pc, ec)+dist-1<N:
+    #         sc = min(pc, ec)
+    #     else:
+    #         sc = max(pc, ec)-dist+1
+    if abs(er-pr)==dist:
+        sr = min(er, pr)
     else:
-        sr = min(pr, er)
-
-    if pc ==ec:
-        if ec-dist+1<0:
+        if max(er, pr)-dist+1>=0:
+            sr = max(er, pr)-dist+1
+        else:
+            sr = 0
+        # if min(er, pr)+dist-1<N:
+        #     sr = min(er, pr)
+        # else:
+        #     sr = max(er, pr)-dist+1
+    if abs(ec-pc)==dist:
+        sc = min(ec, pc)
+    else:
+        if max(ec, pc)-dist+1>=0:
+            sc = max(ec, pc)-dist+1
+        else:
             sc = 0
-        else:
-            sc = min(N-dist-1, ec-dist+1)
-    else:
-        if min(pc, ec)+dist-1<N:
-            sc = min(pc, ec)
-        else:
-            sc = max(pc, ec)-dist+1
-
+    # if abs(er-pr)==dist:
+    #     sr = min(er, pr)
+    # else:
+    #     if min(er, pr)+dist-1<N:
+    #         sr = min(er, pr)
+    #     else:
+    #         sr = max(er, pr)-dist+1
+    # if abs(ec-pc)==dist:
+    #     sc = min(ec, pc)
+    # else:
+    #     if min(ec, pc)+dist-1<N:
+    #         sc = min(ec, pc)
+    #     else:
+    #         sc = max(ec, pc)-dist+1
     # print(people)
     # print("사람 : " ,pr, pc)
     # print("맨 위/왼쪽 점", sr, sc)
