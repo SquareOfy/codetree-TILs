@@ -6,42 +6,6 @@ def oob(i, j):
     return i<0 or j<0 or i>=N or j>=N
 
 
-def find_sr_sc():
-    for dist in range(2, N):
-        st_r = max(er-dist+1, 0)
-        ed_r = min(er+1, N-dist+1)
-        st_c = max(ec-dist+1, 0)
-        ed_c = min(ec+1, N-dist+1)
-        for i in range(st_r, ed_r):
-            for j in range(st_c, ed_c):
-                #탈출구가 포함되는가
-                if not(er in range(i, i+dist) and ec in range(j, j+dist)):
-                    continue
-                #사람이 한명이라도 들어있는가
-                if not find_people(i, j, dist):
-                    continue
-                return i, j, dist
-    return -1, -1, -1
-# def find_sr_sc():
-#     for d in range(2, N):
-#         # 길이가 d이고 시작점이 (i, j)인 사각형이 조건 충족하나?
-#         for i in range(N-d+1):
-#             for j in range(N-d+1):
-#                 #탈출구가 포함되는가
-#                 if not(er in range(i, i+d) and ec in range(j, j+d)):
-#                     continue
-#                 #사람이 한명이라도 들어있는가
-#                 if not find_people(i, j, d):
-#                     continue
-#                 return i, j, d
-#     return -1, -1, -1
-def find_people(i, j, d):
-    for m in range(M):
-        r, c = people[m]
-        if r==-1: continue
-        if r in range(i, i+d) and c in range(j, j+d):
-            return True
-    return False
 
 
 def bfs(r, c):
@@ -73,40 +37,6 @@ def bfs(r, c):
     return -1, -1
 
 
-def dist_bfs():
-    q = deque([(er, ec, 0)])
-    min_dist = 2*N
-    min_len = N
-    visited = [[0]*N for _ in range(N)]
-    visited[er][ec] = 1
-    result_r, result_c = -1, -1
-    while q:
-        cr, cc, rank = q.popleft()
-        if [cr, cc] in people:
-            if rank < min_dist:
-                result_r, result_c = cr, cc
-                min_dist = rank
-                min_len = max(abs(er-cr), abs(ec-cc))+1
-            elif rank == min_dist:
-                l = max(abs(er-cr), abs(ec-cc))+1
-                if l < min_len:
-                    min_len = l
-                    result_r, result_c = cr, cc
-                    #현재 행이 작거나, 행이 같을 때 열이 더작으면 갱신
-                elif l==min_len:
-                    if result_r > cr or (result_r == cr and cc < result_r):
-                        result_r, result_c = cr, cc
-            continue
-        for di, dj in (-1, 0), (0, -1), (1, 0), (0, 1):
-            du = cr+di
-            dv = cc+dj
-            if oob(du, dv) or visited[du][dv]:
-                continue
-            q.append((du, dv, rank+1))
-            visited[du][dv] =1
-
-    return result_r, result_c, min_len
-#
 
 def rotate(r, c, dist):
     return c, dist-1-r
@@ -155,12 +85,6 @@ for k in range(1, K+1):
             people[i] = [-1, -1]
         else:
             people[i] = [nr, nc]
-    #
-    # print("===========이동===========")
-    # print(people)
-    # print(answer)
-    # print("남은 사람 수 : ", cnt)
-    # print("========================")
 
     # 만약 K초 전에 모든 참가자가 탈출에 성공한다면, 게임이 끝납니다.
     #움직이고 나서 사람 수 체크 후 break
@@ -173,30 +97,19 @@ for k in range(1, K+1):
         # 좌상단 r 좌표가 작은 것이 우선되고, 그래도 같으면 c 좌표가 작은 것이 우선됩니다.
         # 선택된 정사각형은 시계방향으로 90도 회전하며, 회전된 벽은 내구도가 1씩 깎입니다.
 
-    pr, pc, dist = dist_bfs()
-    # print('============회전 전 출구 =============')
-    # print(er, ec)
-    # print('===================================')
-    # print("dist : ", dist)
-    # if pr == er:
-    #     if er-dist+1<0:
-    #         sr = 0
-    #     else:
-    #         sr = er-dist+1
-    #
-    # else:
-    #     if min(pr, er)+dist-1<N
-    #
-    # if pc ==ec:
-    #     if ec-dist+1<0:
-    #         sc = 0
-    #     else:
-    #         sc = min(N-dist-1, ec-dist+1)
-    # else:
-    #     if min(pc, ec)+dist-1<N:
-    #         sc = min(pc, ec)
-    #     else:
-    #         sc = max(pc, ec)-dist+1
+    dist = 2*N
+    pr, pc = -1, -1
+    for m in range(M):
+        r, c = people[m]
+        if r==-1: continue
+        tmp = max(abs(er-r), abs(ec-c))+1 #이 사람과 정사각형을 만들 때 한변의 길이 사람이 M명이니까 그 중 최소인 걸 찾아야하고
+        if tmp<dist: #최소 갱신!!
+            # print("갱신")
+            pr, pc = r, c
+            dist = tmp
+        elif tmp==dist and (r, c) < (pr, pc):
+            pr, pc = r, c
+
     if abs(er-pr)==dist:
         sr = min(er, pr)
     else:
@@ -204,10 +117,6 @@ for k in range(1, K+1):
             sr = max(er, pr)-dist+1
         else:
             sr = 0
-        # if min(er, pr)+dist-1<N:
-        #     sr = min(er, pr)
-        # else:
-        #     sr = max(er, pr)-dist+1
     if abs(ec-pc)==dist:
         sc = min(ec, pc)
     else:
@@ -215,20 +124,7 @@ for k in range(1, K+1):
             sc = max(ec, pc)-dist+1
         else:
             sc = 0
-    # if abs(er-pr)==dist:
-    #     sr = min(er, pr)
-    # else:
-    #     if min(er, pr)+dist-1<N:
-    #         sr = min(er, pr)
-    #     else:
-    #         sr = max(er, pr)-dist+1
-    # if abs(ec-pc)==dist:
-    #     sc = min(ec, pc)
-    # else:
-    #     if min(ec, pc)+dist-1<N:
-    #         sc = min(ec, pc)
-    #     else:
-    #         sc = max(ec, pc)-dist+1
+            # sc = max(ec, pc)-dist+1
     # print(people)
     # print("사람 : " ,pr, pc)
     # print("맨 위/왼쪽 점", sr, sc)
@@ -238,14 +134,10 @@ for k in range(1, K+1):
     # print("===================================")
     # print()
 
-    # sr, sc, dist = find_sr_sc()
     #정사각형 회전
-    # print(sr, sc, dist)
     tmp = [[] for _ in range(dist)]
     for i in range(dist):
-        # print(i)
         tmp[i] = arr[sr+i][sc:sc+dist]
-        # print(tmp[i])
     for i in range(dist):
         for j in range(dist):
             if tmp[i][j]>0:
