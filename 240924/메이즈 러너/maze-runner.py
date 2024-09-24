@@ -8,33 +8,33 @@ def oob(i, j):
 
 
 
-def bfs(r, c):
-    q = deque([(r, c, 1, -1, -1)])
-    visited = [[N*N]*N for _ in range(N)]
-    visited[r][c] = 1
-    min_dist = N*N+1
-    while q:
-        cr, cc, rank, one_r, one_c = q.popleft()
-        if cr==er and cc==ec:
-            if rank <= min_dist:
-                min_dist = rank
-                if arr[one_r][one_c]==0 :
-                    return one_r, one_c
-            continue
-        for di, dj in (-1, 0), (1, 0), (0, -1), (0, 1):
-            du = cr+di
-            dv = cc+dj
-            if oob(du, dv) or visited[du][dv] < rank:
-                continue
-
-            visited[du][dv] = rank
-
-            if rank==1:
-                q.append((du, dv, rank+1, du, dv))
-            else:
-                q.append((du, dv, rank+1, one_r, one_c))
-
-    return -1, -1
+# def bfs(r, c):
+#     q = deque([(r, c, 1, -1, -1)])
+#     visited = [[N*N]*N for _ in range(N)]
+#     visited[r][c] = 1
+#     min_dist = N*N+1
+#     while q:
+#         cr, cc, rank, one_r, one_c = q.popleft()
+#         if cr==er and cc==ec:
+#             if rank <= min_dist:
+#                 min_dist = rank
+#                 if arr[one_r][one_c]==0 :
+#                     return one_r, one_c
+#             continue
+#         for di, dj in (-1, 0), (1, 0), (0, -1), (0, 1):
+#             du = cr+di
+#             dv = cc+dj
+#             if oob(du, dv) or visited[du][dv] < rank:
+#                 continue
+#
+#             visited[du][dv] = rank
+#
+#             if rank==1:
+#                 q.append((du, dv, rank+1, du, dv))
+#             else:
+#                 q.append((du, dv, rank+1, one_r, one_c))
+#
+#     return -1, -1
 
 def find_sr_sc():
     result_r, result_c = N, N
@@ -96,8 +96,16 @@ for k in range(1, K+1):
     for i in range(M):
         r, c = people[i]
         if r==-1: continue
-        nr, nc = bfs(r, c)
-        if nr == -1:
+        nr, nc = r, c
+        if er<r and arr[r-1][c]==0:
+            nr = r-1
+        elif er>r and arr[r+1][c] == 0:
+            nr = r+1
+        elif ec<c and arr[r][c-1]==0:
+            nc = c-1
+        elif ec>c and arr[r][c+1]==0:
+            nc = c+1
+        if nr==r and nc==c:
             continue
         answer+=1
         if nr == er and nc == ec:
