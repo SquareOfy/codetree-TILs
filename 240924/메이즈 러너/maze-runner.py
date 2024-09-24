@@ -172,11 +172,11 @@ for k in range(1, K+1):
         # 가장 작은 크기를 갖는 정사각형이 2개 이상이라면,
         # 좌상단 r 좌표가 작은 것이 우선되고, 그래도 같으면 c 좌표가 작은 것이 우선됩니다.
         # 선택된 정사각형은 시계방향으로 90도 회전하며, 회전된 벽은 내구도가 1씩 깎입니다.
-    #
+
+    pr, pc, dist = dist_bfs()
     # print('============회전 전 출구 =============')
     # print(er, ec)
     # print('===================================')
-    pr, pc, dist = dist_bfs()
     # print("dist : ", dist)
     if pr == er:
         sr = max(er-dist+1, 0)
@@ -187,20 +187,23 @@ for k in range(1, K+1):
         if ec-dist+1<0:
             sc = 0
         else:
-            sc = min(N-dist, ec-dist+1)
+            sc = min(N-dist-1, ec-dist+1)
     else:
-        sc = min(pc, ec)
+        if min(pc, ec)+dist-1<N:
+            sc = min(pc, ec)
+        else:
+            sc = max(pc, ec)-dist+1
 
     # print(people)
     # print("사람 : " ,pr, pc)
     # print("맨 위/왼쪽 점", sr, sc)
-
-    # sr, sc, dist = find_sr_sc()
     # print("============회전 범위 =================")
     # print(er, ec)
     # print(sr, sc, dist)
     # print("===================================")
     # print()
+
+    # sr, sc, dist = find_sr_sc()
     #정사각형 회전
     # print(sr, sc, dist)
     tmp = [[] for _ in range(dist)]
