@@ -35,7 +35,7 @@ def bfs(r, c):
     while q:
         cr, cc, rank, one_r, one_c = q.popleft()
         if cr==er and cc==ec:
-            if rank < min_dist:
+            if rank <= min_dist:
                 min_dist = rank
                 if arr[one_r][one_c]==0 :
                     return one_r, one_c
@@ -152,10 +152,7 @@ for k in range(1, K+1):
     # print('============회전 전 출구 =============')
     # print(er, ec)
     # print('===================================')
-    # print('============회전 전 사람 =============')
-    # print(people)
-    # print('===================================')
-    # print()
+
 
     sr, sc, dist = find_sr_sc()
     # print("============회전 범위 =================")
@@ -188,6 +185,11 @@ for k in range(1, K+1):
     er_tmp, ec_tmp = rotate(er_tmp, ec_tmp, dist)
     er, ec = er_tmp+sr, ec_tmp+sc
     #출구좌표 회전
+
+    # print('============회전 전 사람 =============')
+    # print(people)
+    # print('===================================')
+    # print()
 
     #저 안에 들어있는 사람 회전
     for i in range(M):
