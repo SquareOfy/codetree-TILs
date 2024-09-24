@@ -108,14 +108,14 @@ def attack_break(tr, tc, attack_lst):
     related_arr[tr][tc] = 1
     if arr[tr][tc]==0:
         cnt-=1
-        if cnt==0:
+        if cnt==1:
             return True
     for r, c in attack_lst:
         arr[r][c] = max(arr[r][c]-power//2, 0)
         related_arr[r][c] = 1
         if arr[r][c] ==0:
             cnt-=1
-            if cnt==0:
+            if cnt==1:
                 return True
     return False
 
@@ -163,7 +163,7 @@ for k in range(1, K+1):
     # print("power : ", power)
     # print("========================================")
     # print()
-    ############################################
+    # ############################################
 
 
     # 3. 레이저공격 (안 된다면 포탄 공격)
