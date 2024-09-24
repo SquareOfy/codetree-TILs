@@ -76,6 +76,7 @@ def bfs(r, c):
 def dist_bfs():
     q = deque([(er, ec, 0)])
     min_dist = 2*N
+    min_len = N
     visited = [[0]*N for _ in range(N)]
     visited[er][ec] = 1
     result_r, result_c = -1, -1
@@ -85,10 +86,16 @@ def dist_bfs():
             if rank < min_dist:
                 result_r, result_c = cr, cc
                 min_dist = rank
+                min_len = max(abs(er-cr), abs(ec-cc))+1
             elif rank == min_dist:
-                #현재 행이 작거나, 행이 같을 때 열이 더작으면 갱신
-                if result_r > cr or (result_r == cr and cc < result_r):
+                l = max(abs(er-cr), abs(ec-cc))+1
+                if l < min_len:
+                    min_len = l
                     result_r, result_c = cr, cc
+                    #현재 행이 작거나, 행이 같을 때 열이 더작으면 갱신
+                elif l==min_len:
+                    if result_r > cr or (result_r == cr and cc < result_r):
+                        result_r, result_c = cr, cc
             continue
         for di, dj in (-1, 0), (0, -1), (1, 0), (0, 1):
             du = cr+di
@@ -98,7 +105,7 @@ def dist_bfs():
             q.append((du, dv, rank+1))
             visited[du][dv] =1
 
-    return result_r, result_c, min_dist+1
+    return result_r, result_c, min_len
 #
 
 def rotate(r, c, dist):
@@ -165,16 +172,30 @@ for k in range(1, K+1):
         # 가장 작은 크기를 갖는 정사각형이 2개 이상이라면,
         # 좌상단 r 좌표가 작은 것이 우선되고, 그래도 같으면 c 좌표가 작은 것이 우선됩니다.
         # 선택된 정사각형은 시계방향으로 90도 회전하며, 회전된 벽은 내구도가 1씩 깎입니다.
-
+    #
     # print('============회전 전 출구 =============')
     # print(er, ec)
     # print('===================================')
-    # pr, pc, dist = dist_bfs()
+    pr, pc, dist = dist_bfs()
+    # print("dist : ", dist)
+    if pr == er:
+        sr = max(er-dist+1, 0)
+    else:
+        sr = min(pr, er)
 
+    if pc ==ec:
+        if ec-dist+1<0:
+            sc = 0
+        else:
+            sc = min(N-dist, ec-dist+1)
+    else:
+        sc = min(pc, ec)
 
+    # print(people)
+    # print("사람 : " ,pr, pc)
+    # print("맨 위/왼쪽 점", sr, sc)
 
-
-    sr, sc, dist = find_sr_sc()
+    # sr, sc, dist = find_sr_sc()
     # print("============회전 범위 =================")
     # print(er, ec)
     # print(sr, sc, dist)
