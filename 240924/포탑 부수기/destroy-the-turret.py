@@ -43,10 +43,13 @@ def select_attack_target():
                     attack_step = recent_attack[i][j]
 
             # 1. 공격력이 가장 높은 포탑이 가장 강한 포탑
-
+    for i in range(N):
+        for j in range(M):
+            if (i, j)==attack_player: continue
             if arr[i][j]>mx:
                 mx = arr[i][j]
                 target_player = (i, j)
+                target_step = recent_attack[i][j]
             elif arr[i][j] == mx:
                 # 2. 공격한지 가장 오래된 포탑이 가장 강한 포탑 (모든 포탑은 시점 0에 모두 공격한 경험이 있음.)
                 if target_step > recent_attack[i][j]:
@@ -122,8 +125,11 @@ def attack_break(tr, tc, attack_lst):
 # 공격력이 0 이하가 된다면, 해당 포탑은 부서지며 더 이상의 공격을 할 수 없습니다
 N, M, K = map(int, input().split())
 arr = [list(map(int, input().split())) for _ in range(N)]
+###############입력 ###############
 # for i in range(N):
 #     print(arr[i])
+
+##################################3
 cnt = 0 #전체 포탑개수로 1개 되면 아래 즉시 중지 시킬 것
 recent_attack = [[0]*M for _ in range(N)]
 
