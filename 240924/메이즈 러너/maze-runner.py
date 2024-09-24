@@ -5,6 +5,27 @@ def control_idx(i):
 def oob(i, j):
     return i<0 or j<0 or i>=N or j>=N
 
+def find_sr_sc():
+    for d in range(2, N):
+        # 길이가 d이고 시작점이 (i, j)인 사각형이 조건 충족하나?
+        for i in range(N-d):
+            for j in range(N-d):
+                #탈출구가 포함되는가
+                if not(er in range(i, i+d) and ec in range(j, j+d)):
+                    continue
+                #사람이 한명이라도 들어있는가
+                if not find_people(i, j, d):
+                    continue
+                return i, j, d
+    return -1, -1, -1
+def find_people(i, j, d):
+    for m in range(M):
+        r, c = people[m]
+        if r==-1: continue
+        if r in range(i, i+d) and c in range(j, j+d):
+            return True
+    return False
+
 # 미로는 N×N 크기의 격자  좌상단은 (1,1)
 # 벽
     # 참가자가 이동할 수 없는 칸입니다.
@@ -18,22 +39,24 @@ er, ec = map(control_idx, input().split())
 cnt = M
 answer = 0
 
+# for i in range(N):
+#     print(arr[i])
+
 # K초 동안 위의 과정을 계속 반복됩니다.
 def bfs(r, c):
     q = deque([(r, c, 0, -1, -1)])
-    visited=  [[0]*N for _ in range(N)]
+    visited=  [[N*N]*N for _ in range(N)]
     visited[r][c] = 1
     while q:
         cr, cc, rank, one_r, one_c = q.popleft()
         if cr==er and cc==ec:
-            # print("도착하긴 하는데 ")
             if arr[one_r][one_c]==0:
                 return one_r, one_c
             continue
         for di, dj in (-1, 0), (1, 0), (0, -1), (0, 1):
             du = cr+di
             dv = cc+dj
-            if oob(du, dv) or visited[du][dv]:
+            if oob(du, dv) or visited[du][dv]<rank+1:
                 continue
 
             visited[du][dv] = rank+1
@@ -91,8 +114,10 @@ for k in range(1, K+1):
     # 한 칸에 2명 이상의 참가자가 있을 수 있습니다.
     for i in range(M):
         r, c = people[i]
+        # print("r, c : ", r, c)
         if r==-1: continue
         nr, nc = bfs(r, c)
+        # print("nr, nc : ", nr, nc)
         if nr == -1:
             continue
         answer+=1
@@ -118,23 +143,23 @@ for k in range(1, K+1):
         # 가장 작은 크기를 갖는 정사각형이 2개 이상이라면,
         # 좌상단 r 좌표가 작은 것이 우선되고, 그래도 같으면 c 좌표가 작은 것이 우선됩니다.
         # 선택된 정사각형은 시계방향으로 90도 회전하며, 회전된 벽은 내구도가 1씩 깎입니다.
-    pr, pc, dist = dist_bfs()
+    # pr, pc, dist = dist_bfs()
     # print(pr, pc, dist)
-    if pr==er:
-        sr = max(er-dist+1, 0)
-    else:
-        sr = min(pr, er)
-
-    if pc==ec:
-        sc = max(ec-dist+1, 0)
-    else:
-        sc = min(pc, ec)
-
-    if sr+dist >=N:
-        sr = N-dist
-    if sc+dist >=N:
-        sc = N-dist
-
+    # if pr==er:
+    #     sr = max(er-dist+1, 0)
+    # else:
+    #     sr = min(pr, er)
+    #
+    # if pc==ec:
+    #     sc = max(ec-dist+1, 0)
+    # else:
+    #     sc = min(pc, ec)
+    #
+    # if sr+dist >=N:
+    #     sr = N-dist
+    # if sc+dist >=N:
+    #     sc = N-dist
+    #
     # print("============회전 범위 =================")
     # print(sr, sc, dist)
     # print("===================================")
@@ -144,9 +169,28 @@ for k in range(1, K+1):
     #     print(arr[i])
     # print("========================================")
     # print()
+    #
+    # print("========================================")
+    # print()
+    # print('============회전 전 출구 =============')
+    # print(er, ec)
+    # print()
+    #
+    # print('============회전 후 출구 =============')
+    # print(er, ec)
+    # print('===================================')
+    # print('============회전 전 사람 =============')
+    # print(people)
+    # print('===================================')
+    # print()
 
+    sr, sc, dist = find_sr_sc()
+    # print("============회전 범위 =================")
+    # print(er, ec)
+    # print(sr, sc, dist)
+    # print("===================================")
+    # print()
     #정사각형 회전
-    # print(k)
     # print(sr, sc, dist)
     tmp = [[] for _ in range(dist)]
     for i in range(dist):
@@ -165,24 +209,13 @@ for k in range(1, K+1):
     # print("==================회전 후 =============")
     # for i in range(N):
     #     print(arr[i])
-    # print("========================================")
-    # print()
-    # print('============회전 전 출구 =============')
-    # print(er, ec)
-    # print()
 
     er_tmp = er-sr
     ec_tmp = ec-sc
     er_tmp, ec_tmp = rotate(er_tmp, ec_tmp, dist)
     er, ec = er_tmp+sr, ec_tmp+sc
     #출구좌표 회전
-    # print('============회전 후 출구 =============')
-    # print(er, ec)
-    # print('===================================')
-    # print('============회전 전 사람 =============')
-    # print(people)
-    # print('===================================')
-    # print()
+
     #저 안에 들어있는 사람 회전
     for i in range(M):
         r, c = people[i]
