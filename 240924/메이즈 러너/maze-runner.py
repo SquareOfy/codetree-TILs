@@ -121,14 +121,19 @@ for k in range(1, K+1):
     pr, pc, dist = dist_bfs()
     # print(pr, pc, dist)
     if pr==er:
-        sr = max(er-dist, 0)
+        sr = max(er-dist+1, 0)
     else:
         sr = min(pr, er)
 
     if pc==ec:
-        sc = max(ec-dist, 0)
+        sc = max(ec-dist+1, 0)
     else:
         sc = min(pc, ec)
+
+    if sr+dist >=N:
+        sr = N-dist
+    if sc+dist >=N:
+        sc = N-dist
 
     # print("============회전 범위 =================")
     # print(sr, sc, dist)
@@ -141,10 +146,13 @@ for k in range(1, K+1):
     # print()
 
     #정사각형 회전
+    # print(k)
+    # print(sr, sc, dist)
     tmp = [[] for _ in range(dist)]
     for i in range(dist):
+        # print(i)
         tmp[i] = arr[sr+i][sc:sc+dist]
-
+        # print(tmp[i])
     for i in range(dist):
         for j in range(dist):
             if tmp[i][j]>0:
