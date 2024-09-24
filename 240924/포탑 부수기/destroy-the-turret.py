@@ -96,7 +96,7 @@ def get_attack_lst(tr, tc):
     for di, dj in (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1):
         du = (tr+di)%N
         dv = (tc+dj)%M
-        if arr[du][dv] == 0:
+        if arr[du][dv] == 0 or (du==ar and dv==ac):
             continue
         result.append((du, dv))
     return result
@@ -156,7 +156,7 @@ for k in range(1, K+1):
     power = arr[ar][ac]
 
     #공격자, 타겟 선정 체크완#################
-    # print("===============================================================")
+    # print(f"{k}!!!===============================================================")
     # print("===========atack and target ==========")
     # print("attack : ", attack_player)
     # print("target : ", target_player)
