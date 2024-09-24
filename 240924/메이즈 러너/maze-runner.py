@@ -5,19 +5,36 @@ def control_idx(i):
 def oob(i, j):
     return i<0 or j<0 or i>=N or j>=N
 
+
 def find_sr_sc():
-    for d in range(2, N):
-        # 길이가 d이고 시작점이 (i, j)인 사각형이 조건 충족하나?
-        for i in range(N-d+1):
-            for j in range(N-d+1):
+    for dist in range(2, N):
+        st_r = max(er-dist+1, 0)
+        ed_r = min(er+1, N-dist+1)
+        st_c = max(ec-dist+1, 0)
+        ed_c = min(ec+1, N-dist+1)
+        for i in range(st_r, ed_r):
+            for j in range(st_c, ed_c):
                 #탈출구가 포함되는가
-                if not(er in range(i, i+d) and ec in range(j, j+d)):
+                if not(er in range(i, i+dist) and ec in range(j, j+dist)):
                     continue
                 #사람이 한명이라도 들어있는가
-                if not find_people(i, j, d):
+                if not find_people(i, j, dist):
                     continue
-                return i, j, d
+                return i, j, dist
     return -1, -1, -1
+# def find_sr_sc():
+#     for d in range(2, N):
+#         # 길이가 d이고 시작점이 (i, j)인 사각형이 조건 충족하나?
+#         for i in range(N-d+1):
+#             for j in range(N-d+1):
+#                 #탈출구가 포함되는가
+#                 if not(er in range(i, i+d) and ec in range(j, j+d)):
+#                     continue
+#                 #사람이 한명이라도 들어있는가
+#                 if not find_people(i, j, d):
+#                     continue
+#                 return i, j, d
+#     return -1, -1, -1
 def find_people(i, j, d):
     for m in range(M):
         r, c = people[m]
@@ -56,32 +73,32 @@ def bfs(r, c):
     return -1, -1
 
 
-# def dist_bfs():
-#     q = deque([(er, ec, 0)])
-#     min_dist = 2*N
-#     visited = [[0]*N for _ in range(N)]
-#     visited[er][ec] = 1
-#     result_r, result_c = -1, -1
-#     while q:
-#         cr, cc, rank = q.popleft()
-#         if [cr, cc] in people:
-#             if rank < min_dist:
-#                 result_r, result_c = cr, cc
-#                 min_dist = rank
-#             elif rank == min_dist:
-#                 #현재 행이 작거나, 행이 같을 때 열이 더작으면 갱신
-#                 if result_r > cr or (result_r == cr and cc < result_r):
-#                     result_r, result_c = cr, cc
-#             continue
-#         for di, dj in (-1, 0), (0, -1), (1, 0), (0, 1):
-#             du = cr+di
-#             dv = cc+dj
-#             if oob(du, dv) or visited[du][dv]:
-#                 continue
-#             q.append((du, dv, rank+1))
-#             visited[du][dv] =1
-#
-#     return result_r, result_c, min_dist+1
+def dist_bfs():
+    q = deque([(er, ec, 0)])
+    min_dist = 2*N
+    visited = [[0]*N for _ in range(N)]
+    visited[er][ec] = 1
+    result_r, result_c = -1, -1
+    while q:
+        cr, cc, rank = q.popleft()
+        if [cr, cc] in people:
+            if rank < min_dist:
+                result_r, result_c = cr, cc
+                min_dist = rank
+            elif rank == min_dist:
+                #현재 행이 작거나, 행이 같을 때 열이 더작으면 갱신
+                if result_r > cr or (result_r == cr and cc < result_r):
+                    result_r, result_c = cr, cc
+            continue
+        for di, dj in (-1, 0), (0, -1), (1, 0), (0, 1):
+            du = cr+di
+            dv = cc+dj
+            if oob(du, dv) or visited[du][dv]:
+                continue
+            q.append((du, dv, rank+1))
+            visited[du][dv] =1
+
+    return result_r, result_c, min_dist+1
 #
 
 def rotate(r, c, dist):
@@ -152,6 +169,9 @@ for k in range(1, K+1):
     # print('============회전 전 출구 =============')
     # print(er, ec)
     # print('===================================')
+    # pr, pc, dist = dist_bfs()
+
+
 
 
     sr, sc, dist = find_sr_sc()
