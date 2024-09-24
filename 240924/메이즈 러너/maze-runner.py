@@ -36,7 +36,30 @@ def bfs(r, c):
 
     return -1, -1
 
-
+def find_sr_sc():
+    result_r, result_c = N, N
+    for pr, pc in p_lst:
+        if abs(er-pr)==dist:
+            sr = min(er, pr)
+        else:
+            if max(er, pr)-dist+1>=0:
+                sr = max(er, pr)-dist+1
+            else:
+                sr = 0
+        if abs(ec-pc)==dist:
+            sc = min(ec, pc)
+        else:
+            if max(ec, pc)-dist+1>=0:
+                sc = max(ec, pc)-dist+1
+            else:
+                sc = 0
+        if sr<result_r:
+            result_r=sr
+            result_c=sc
+        elif sr==result_r and sc<result_c:
+            result_r = sr
+            result_c = sc
+    return result_r, result_c
 
 def rotate(r, c, dist):
     return c, dist-1-r
@@ -61,7 +84,6 @@ answer = 0
 
 
 for k in range(1, K+1):
-    # print(f"====================={k}===================")
 
     # 1. 움직임
     # 1초마다 모든 참가자는 한 칸씩 움직임
@@ -73,10 +95,8 @@ for k in range(1, K+1):
     # 한 칸에 2명 이상의 참가자가 있을 수 있습니다.
     for i in range(M):
         r, c = people[i]
-        # print("r, c : ", r, c)
         if r==-1: continue
         nr, nc = bfs(r, c)
-        # print("nr, nc : ", nr, nc)
         if nr == -1:
             continue
         answer+=1
@@ -85,7 +105,6 @@ for k in range(1, K+1):
             people[i] = [-1, -1]
         else:
             people[i] = [nr, nc]
-
     # 만약 K초 전에 모든 참가자가 탈출에 성공한다면, 게임이 끝납니다.
     #움직이고 나서 사람 수 체크 후 break
     if cnt == 0:
@@ -98,41 +117,19 @@ for k in range(1, K+1):
         # 선택된 정사각형은 시계방향으로 90도 회전하며, 회전된 벽은 내구도가 1씩 깎입니다.
 
     dist = 2*N
-    pr, pc = -1, -1
+    p_lst = []
     for m in range(M):
         r, c = people[m]
         if r==-1: continue
         tmp = max(abs(er-r), abs(ec-c))+1 #이 사람과 정사각형을 만들 때 한변의 길이 사람이 M명이니까 그 중 최소인 걸 찾아야하고
         if tmp<dist: #최소 갱신!!
-            # print("갱신")
-            pr, pc = r, c
+            p_lst = [(r, c)]
             dist = tmp
-        elif tmp==dist and (r, c) < (pr, pc):
-            pr, pc = r, c
+        elif tmp==dist:
+            p_lst.append((r, c))
 
-    if abs(er-pr)==dist:
-        sr = min(er, pr)
-    else:
-        if max(er, pr)-dist+1>=0:
-            sr = max(er, pr)-dist+1
-        else:
-            sr = 0
-    if abs(ec-pc)==dist:
-        sc = min(ec, pc)
-    else:
-        if max(ec, pc)-dist+1>=0:
-            sc = max(ec, pc)-dist+1
-        else:
-            sc = 0
-            # sc = max(ec, pc)-dist+1
-    # print(people)
-    # print("사람 : " ,pr, pc)
-    # print("맨 위/왼쪽 점", sr, sc)
-    # print("============회전 범위 =================")
-    # print(er, ec)
-    # print(sr, sc, dist)
-    # print("===================================")
-    # print()
+    sr, sc = find_sr_sc()
+
 
     #정사각형 회전
     tmp = [[] for _ in range(dist)]
@@ -147,9 +144,6 @@ for k in range(1, K+1):
     for i in range(dist):
         arr[sr+i][sc:sc+dist] = tmp[i][:]
 
-    # print("==================회전 후 =============")
-    # for i in range(N):
-    #     print(arr[i])
 
     er_tmp = er-sr
     ec_tmp = ec-sc
@@ -157,10 +151,6 @@ for k in range(1, K+1):
     er, ec = er_tmp+sr, ec_tmp+sc
     #출구좌표 회전
 
-    # print('============회전 전 사람 =============')
-    # print(people)
-    # print('===================================')
-    # print()
 
     #저 안에 들어있는 사람 회전
     for i in range(M):
