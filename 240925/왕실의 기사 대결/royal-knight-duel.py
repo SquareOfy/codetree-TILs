@@ -29,10 +29,11 @@ def is_possible_push(num, di, dj):
         for j in range(c, c + w):
             if arr[du][j] == 2:
                 return False
-            if gisa[du][j] != 0 and gisa[du][j] not in push_lst:
+            if gisa[du][j] != 0:
                 if not is_possible_push(gisa[du][j], di, dj):
                     return False
-                push_lst.append(gisa[du][j])
+                if gisa[du][j] not in push_lst:
+                    push_lst.append(gisa[du][j])
         return True
     else:
         dv = c + w if dj > 0 else c - 1
@@ -41,10 +42,11 @@ def is_possible_push(num, di, dj):
         for j in range(r, r + h):
             if arr[j][dv] == 2:
                 return False
-            if gisa[j][dv] and gisa[j][dv] not in push_lst:
+            if gisa[j][dv]:
                 if not is_possible_push(gisa[j][dv], di, dj):
                     return False
-                push_lst.append(gisa[j][dv])
+                if gisa[j][dv] not in push_lst:
+                    push_lst.append(gisa[j][dv])
         return True
 
 
@@ -61,7 +63,7 @@ def push(num, di, dj):
     else:
         delete_c = c if dj > 0 else c + w - 1
         new_c = c + w if dj > 0 else c - 1
-        
+
         for j in range(r, r + h):
             gisa[j][delete_c] = 0
             gisa[j][new_c] = num
@@ -94,7 +96,7 @@ for q in range(Q):
 
     q_i, d = map(int, input().split())
 
-    if hp[q_i] <= 0: continue 
+    if hp[q_i] <= 0: continue
 
     r, c, h, w = gisa_info[q_i]
     di, dj = DIR[d]
