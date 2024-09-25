@@ -10,6 +10,7 @@ gisa_info = [-1]
 hp = [0] * (N + 1)
 damage_lst = [0] * (N + 1)
 DIR = (-1, 0), (0, 1), (1, 0), (0, -1)
+
 for n in range(1, N + 1):
     r, c, h, w, k = map(int, input().split())
     r -= 1
@@ -28,47 +29,60 @@ def is_possible_push(num, di, dj):
 
     r, c, h, w = gisa_info[num]
     if di:
-        line_visited = [0] * w
+
         du = r + h if di > 0 else r - 1
+        #바로 다음이 벽이다? 못 가.
         if du < 0 or du >= L:
             return False
-        while 1:
-            if du < 0 or du >= L:
-                break
-            for j in range(c, c+w):
-                if line_visited[j-c]: continue
-                if gisa[du][j] != 0 and gisa[du][j]!=num:
-                    if not is_possible_push(gisa[du][j], di, dj):
-                        return False
-                    if gisa[du][j] not in push_lst:
-                        push_lst.append(gisa[du][j])
-                elif arr[du][j] == 0 and gisa[du][j] == 0:
-                    line_visited[j-c] = 1
-                elif arr[du][j] == 2:
+        line_visited = [0] * w
 
+            # if du < 0 or du >= L:
+            #     break
+        for j in range(c, c+w):
+            if line_visited[j-c]:
+                continue
+            if arr[du][j] == 2:
+                return False
+            if gisa[du][j] != 0 and gisa[du][j]!=num:
+                if not is_possible_push(gisa[du][j], di, dj):
                     return False
-            du += di
+                if gisa[du][j] not in push_lst:
+                    push_lst.append(gisa[du][j])
+            elif arr[du][j] == 0 and gisa[du][j] == 0:
+                line_visited[j-c] = 1
+
         return True
     else:
-        line_visited = [0] * h
+
         dv = c + w if dj > 0 else c - 1
         if dv < 0 or dv >= L:
             return False
-        while 1:
-            if dv<0 or dv>=L:
-                break
-            for j in range(r, r+h):
-                if line_visited[j-r]: continue
-                if gisa[j][dv] != 0 and gisa[j][dv] !=num:
-                    if not is_possible_push(gisa[j][dv], di, dj):
-                        return False
-                    if gisa[j][dv] not in push_lst:
-                        push_lst.append(gisa[j][dv])
-                elif arr[j][dv] == 0 and gisa[j][dv] == 0:
-                    line_visited[j-r] = 1
-                elif arr[j][dv] == 2:
+        line_visited = [0] * h
+
+        # if dv<0 or dv>=L:
+        #     print("여기도 아니고")
+
+        for j in range(r, r+h):
+            # print("여기 들어옴?", j, dv, r, h)
+            # print(line_visited)
+            # print(arr[j][dv])
+            if line_visited[j-r]:
+                # print("continue 당함")
+                continue
+            if arr[j][dv] == 2:
+                # print("벽만나서 못가는데")
+                return False
+            if gisa[j][dv] != 0 and gisa[j][dv] !=num:
+                # print("다음 함수 호출")
+                if not is_possible_push(gisa[j][dv], di, dj):
+                    # print("여기서 안되고")
                     return False
-            dv += dj
+                if gisa[j][dv] not in push_lst:
+                    push_lst.append(gisa[j][dv])
+            elif arr[j][dv] == 0 and gisa[j][dv] == 0:
+                line_visited[j-r] = 1
+
+
         return True
 
 
@@ -125,17 +139,26 @@ for q in range(Q):
     # 기사가 이동하려는 방향의 끝에 벽이 있다면 모든 기사는 이동할 수 없게 됩니다.
     # 만약 이동하려는 위치에 다른 기사가 있다면 그 기사도 함께 연쇄적으로 한 칸 밀려나
     # 그 옆에 또 기사가 있다면 연쇄적으로 한 칸씩 밀림
-    # print('=========================================')
+    # print(f'===================={q}=====================')
     # print(q_i, d)
     r, c, h, w = gisa_info[q_i]
     di, dj = DIR[d]
     push_lst = []
     is_possible = is_possible_push(q_i, di, dj)
     # 밀 수 없다
+    # print("밀 수 있다=========밀기 전")
+    # for k in range(L):
+    #     print(gisa[k])
+    # print()
+
     if not is_possible:
+        # print("밀 수 없다@@@@@@@@@@@@@@@@@@@@@@@@@")
         continue
 
-    # print("밀 수 있다")
+    # print("밀 수 있다=========밀기 전")
+    # for k in range(L):
+    #     print(gisa[k])
+    # print()
 
     for k in range(len(push_lst) - 1, -1, -1):
         num = push_lst[k]
@@ -154,9 +177,12 @@ for q in range(Q):
     # 명령을 받은 기사는 피해를 입지 않으며, 기사들은 모두 밀린 이후에 대미지를 입게 됩니다.
     for num in push_lst:
         get_damage(num)
+        # print("밀린게 있다 !! ")
 
     # print("hp ")
     # print(hp)
+    # print("===damage")
+    # print(damage_lst)
 # 출력
 # Q 번의 대결이 모두 끝난 후 생존한 기사들이 총 받은 대미지의 합
 print(sum(damage_lst))
