@@ -95,7 +95,7 @@ def crush(r, c, di, dj, step):
 N, M, P, C, D = map(int, input().split())
 rr, rc = map(change_idx, input().split())
 santa_arr = [[0]*N for _ in range(N)]
-santa = [[-1, -1] for _ in range(N+1)]
+santa = [[-1, -1] for _ in range(P+1)]
 for i in range(P):
     num, r, c = map(change_idx, input().split())
     santa_arr[r][c] = num+1 #santa 번호 함수로 1빼줬으니까 다시 더해줌
