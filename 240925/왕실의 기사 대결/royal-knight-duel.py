@@ -53,10 +53,8 @@ def check(num, flag, di, dj):
     #한칸 이동 가능한지 체크!
     #flag 1이면 첫 기사를 말하는거라 아예 빈칸인지도 체크
     r, c, h, w = gisa_info[num]
-    # print(r, c, h, w)
     if di != 0:
         nr = r + h if di > 0 else r - 1
-        # print("nr : ", nr)
         if nr ==L or nr<0:
             # print("범위 out")
             return False
@@ -93,8 +91,7 @@ L, N, Q = map(int, input().split())
 # 다음 L 개의 줄에 걸쳐서 L×L 크기의 체스판에 대한 정보가 주어집니다.
 # 0이라면 빈칸 / 1이라면 함정 / 2라면 벽
 arr = [list(map(int, input().split())) for _ in range(L)]
-# for i in range(L):
-#     print(arr[i])
+
 gisa_hp = [0]*(N+1)
 gisa_info = [0] #h, w 정보
 gisa_arr = [[0]*L for _ in range(L)]
@@ -164,16 +161,17 @@ for q in range(Q):
         if di!=0:
             #이 라인 밀 기사 다 체크
             for j in range(c, c + w):
-                if line_visited[j-c]:
+                if line_visited[j-c]: #이 줄이 이미 빈칸을 만남 !
                     continue
-                if gisa_arr[nr][c]==0:
+                if gisa_arr[nr][j]==0: #빈칸 만나면 가능이니까 여기 앞으로 안봐
                     line_visited[j-c] = 1
                     continue
+                #내가 볼 곳이 빈칸이 아니고 나도 아니고 ! 그 숫자가 lst에 없으면 넣기 ! 밀 기사임
                 if gisa_arr[nr][j] != 0 and gisa_arr[nr][j] != i and not visited[gisa_arr[nr][j]]:
                     push_lst.append(gisa_arr[nr][j])
                     visited[gisa_arr[nr][j]] = 1
-            nr += di
-            if not (0<=nr<L):
+            nr += di #다음 행 보러 가기
+            if not (0<=nr<L) or sum(line_visited) == w:
                 break
         else:
             for j in range(r, r + h):
@@ -186,7 +184,7 @@ for q in range(Q):
                     push_lst.append(gisa_arr[j][nc])
                     visited[gisa_arr[j][nc]] = 1
             nc += dj
-            if not (0<=nc<L):
+            if not (0<=nc<L) or sum(line_visited) == h:
                 break
     # print("push lst")
     # print(push_lst)
