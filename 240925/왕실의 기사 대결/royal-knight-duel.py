@@ -58,14 +58,16 @@ def push(num, di, dj):
         delete_r = r if di > 0 else r + h - 1
         new_r = r + h if di > 0 else r - 1
         for j in range(c, c + w):
-            gisa[delete_r][j] = 0
+            if gisa[delete_r][j] == num:
+                gisa[delete_r][j] = 0
             gisa[new_r][j] = num
     else:
         delete_c = c if dj > 0 else c + w - 1
         new_c = c + w if dj > 0 else c - 1
 
         for j in range(r, r + h):
-            gisa[j][delete_c] = 0
+            if gisa[j][delete_c]==num:
+                gisa[j][delete_c] = 0
             gisa[j][new_c] = num
 
 
