@@ -15,8 +15,8 @@ def move(num, di, dj):
             # print("r+i : ", r+i)
             gisa_arr[r+i][c+dv] = 0
         for i in range(h):
-            # print("c+(w-1-dv) : ", c+(w-dv))
-            gisa_arr[r+i][c+(w-dv)] = num
+            # print("c+(w-1-dv) : ", c+(w-dv+dj))
+            gisa_arr[r+i][c+(w-1-dv)] = num
     gisa_info[num] = [r+di, c+dj, h, w]
 
 
@@ -26,6 +26,57 @@ def kill(num):
     for i in range(h):
         for j in range(w):
             arr[r+i][c+j] = 0
+
+
+def is_possible(push_lst, di, dj):
+    #맨 마지막 애부터 쭉 이동이 가능한지 보기 !!
+    for i in range(len(push_lst)-1, -1, -1):
+        num = push_lst[i]
+        if not check(num, 0, di, dj):
+            return False
+    return True
+
+def get_damage(num):
+    damage = 0
+    r, c, h, w = gisa_info[num]
+    for i in range(h):
+        for j in range(w):
+            if arr[r+i][c+j]==1:
+                damage+=1
+    return damage
+
+def check(num, flag, di, dj):
+    #한칸 이동 가능한지 체크!
+    #flag 1이면 첫 기사를 말하는거라 아예 빈칸인지도 체크
+    r, c, h, w = gisa_info[num]
+    # print(r, c, h, w)
+    if di != 0:
+        nr = r + h if di > 0 else r - 1
+        if nr ==L or nr<0:
+            return False
+        # print("nr : ", nr)
+        for j in range(c, c + w):
+            if arr[nr][j] == 2:
+                return False
+            if flag and gisa_arr[nr][j] !=0:
+                return False
+    else:
+        nc = c + w if dj > 0 else c - 1
+        if nc ==L or nc<0:
+            return False
+        for i in range(r, r + h):
+            if arr[i][nc] == 2:
+                return False
+            if flag and gisa_arr[i][nc] !=0:
+                return False
+    return True
+
+def print_gisa():
+    print("=========gisa===========")
+    for i in range(L):
+        print(gisa_arr[i])
+    print()
+
 
 L, N, Q = map(int, input().split())
 # 다음 L 개의 줄에 걸쳐서 L×L 크기의 체스판에 대한 정보가 주어집니다.
@@ -39,6 +90,7 @@ gisa_arr = [[0]*L for _ in range(L)]
 gisa_damage = [0]*(N+1)
 DIR = (-1, 0), (0, 1), (1, 0), (0, -1)
 damage = [0]*(L+1)
+
 # 체스판의 왼쪽 상단은 (1,1)로 시작
 #  N 개의 줄에 걸쳐서 초기 기사들의 정보가 주어짐 (r,c,h,w,k) 순
 # 기사의 처음 위치는 (r,c)를 좌측 상단 꼭지점으로 하며 세로 길이가 h, 가로 길이가 w인 직사각형 형태
@@ -55,8 +107,6 @@ for i in range(1, N+1):
         for x in range(c, c+w):
             gisa_arr[y][x] = i
     gisa_hp[i] = k
-    # print(i)
-    # print(gisa_info)
     gisa_info.append([r, c, h, w])
 
 
@@ -64,50 +114,6 @@ for i in range(1, N+1):
 # 이는 i번 기사에게 방향 d로 한 칸 이동하라는 명령
 # i는 1 이상 N 이하의 값을 갖으며, 이미 사라진 기사 번호가 주어질 수도 있음에 유의
 # d는 0, 1, 2, 3 중에 하나  / 위쪽, 오른쪽, 아래쪽, 왼쪽 방향
-def is_possible(push_lst, di, dj):
-    #맨 마지막 애부터 쭉 이동이 가능한지 보기 !!
-    for i in range(len(push_lst)-1, -1, -1):
-        num = push_lst[i]
-        if not check(num, 0):
-            return False
-    return True
-
-def get_damage(num):
-    damage = 0
-    r, c, h, w = gisa_info[num]
-    for i in range(h):
-        for j in range(w):
-            if arr[r+i][c+j]==1:
-                damage+=1
-    return damage
-
-def check(num, flag):
-    #한칸 이동 가능한지 체크!
-    #flag 1이면 첫 기사를 말하는거라 아예 빈칸인지도 체크
-    r, c, h, w = gisa_info[num]
-    # print(r, c, h, w)
-    if di != 0:
-        nr = r + h if di > 0 else r - 1
-        # print("nr : ", nr)
-        for j in range(c, c + w):
-            if arr[nr][j] == 2:
-                return False
-            if flag and gisa_arr[nr][j] !=0:
-                return False
-    else:
-        nc = c + w if dj > 0 else c - 1
-        for i in range(r, r + h):
-            if arr[i][nc] == 2:
-                return False
-            if flag and gisa_arr[i][nc] !=0:
-                return False
-    return True
-
-def print_gisa():
-    print("=========gisa===========")
-    for i in range(L):
-        print(gisa_arr[i])
-    print()
 
 
 for q in range(Q):
@@ -115,7 +121,7 @@ for q in range(Q):
     # print(f"=================={i}번 기사를 {DIR[d]} 방향으로 밀기 ===============")
 
     # 체스판에서 사라진 기사에게 명령을 내리면 아무런 반응이 없게 됩니다
-    if gisa_hp[i]<0:
+    if gisa_hp[i]<=0:
         continue
 
     # (1) 기사 이동
@@ -126,7 +132,7 @@ for q in range(Q):
     flag = False
     #내가 이동할 칸이 모오두 빈 칸인지 체크(기사가 있는지 없는지 !! )
     #기사도 벽도 아예 없다. 한칸 이동 가능이야
-    if check(i, 1):
+    if check(i, 1, di, dj):
         # print("그냥 이동 가능")
         move(i, di, dj)
         continue
