@@ -74,6 +74,10 @@ def is_possible_push(num, di, dj):
                 return False
             if gisa[j][dv] != 0 and gisa[j][dv] !=num:
                 # print("다음 함수 호출")
+                # for k in range(L):
+                #     print(gisa[k])
+                # print()
+                # print(hp)
                 if not is_possible_push(gisa[j][dv], di, dj):
                     # print("여기서 안되고")
                     return False
@@ -109,7 +113,7 @@ def push(num, di, dj):
 def kill(num):
     r, c, h, w = gisa_info[num]
     for i in range(r, r+h):
-        for j in range(c, c+h):
+        for j in range(c, c+w):
             gisa[i][j] = 0
     damage_lst[num] = 0
     gisa_info[num] = -1
@@ -144,6 +148,8 @@ for q in range(Q):
     r, c, h, w = gisa_info[q_i]
     di, dj = DIR[d]
     push_lst = []
+    # print(q_i)
+    # print(gisa_info)
     is_possible = is_possible_push(q_i, di, dj)
     # 밀 수 없다
     # print("밀 수 있다=========밀기 전")
