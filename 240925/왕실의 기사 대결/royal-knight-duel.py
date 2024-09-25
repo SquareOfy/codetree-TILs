@@ -6,17 +6,21 @@ def move(num, di, dj):
     r, c, h, w = gisa_info[num]
     if di != 0:
         du = 0 if di >0 else h-1 #지워야할 위치
+        nr = r+h if di>0 else r-1
         gisa_arr[r+du][c:c+w] = [0]*w
-        gisa_arr[r+(h-1-du)][c:c+w] = [num]*w
+        # print_gisa()
+        gisa_arr[nr][c:c+w] = [num]*w
+        # gisa_arr[r+(h-1-du)][c:c+w] = [num]*w
     else:
         dv = 0 if dj>0 else w-1
+        nc = c+w if dj>0 else c-1
         # print("c+dv : ", c+dv)
         for i in range(h):
             # print("r+i : ", r+i)
             gisa_arr[r+i][c+dv] = 0
         for i in range(h):
-            # print("c+(w-1-dv) : ", c+(w-dv+dj))
-            gisa_arr[r+i][c+(w-1-dv)] = num
+            # print("c+(w-1-dv) : ", c+(w-1-dv))
+            gisa_arr[r+i][nc] = num
     gisa_info[num] = [r+di, c+dj, h, w]
 
 
@@ -52,7 +56,9 @@ def check(num, flag, di, dj):
     # print(r, c, h, w)
     if di != 0:
         nr = r + h if di > 0 else r - 1
+        # print("nr : ", nr)
         if nr ==L or nr<0:
+            # print("범위 out")
             return False
         # print("nr : ", nr)
         for j in range(c, c + w):
@@ -62,13 +68,18 @@ def check(num, flag, di, dj):
                 return False
     else:
         nc = c + w if dj > 0 else c - 1
+        # print("nc : ", nc)
         if nc ==L or nc<0:
+            # print("범위 out")
             return False
         for i in range(r, r + h):
+            # print("i : ", i)
             if arr[i][nc] == 2:
                 return False
             if flag and gisa_arr[i][nc] !=0:
                 return False
+
+    # print("check True")
     return True
 
 def print_gisa():
@@ -135,6 +146,7 @@ for q in range(Q):
     if check(i, 1, di, dj):
         # print("그냥 이동 가능")
         move(i, di, dj)
+        # print_gisa()
         continue
 
     #밀 기사나 벽이 잇다면
@@ -213,15 +225,17 @@ for q in range(Q):
 
     # print('=============자기 자신 이동=========')
     move(i, di, dj)
-
+    #
     # print_gisa()
-
+    #
     # print("damage 정보")
     # print(gisa_damage)
     # print('hp 정보')
     # print(gisa_hp)
     # print('gisa info')
     # print(gisa_info)
+
+    # print("=========================================")
 
 
 
