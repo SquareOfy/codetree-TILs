@@ -26,12 +26,16 @@ def can_move(r, c, dk):
             return True
         return False
     elif dk == 3:
+        if r==-2 and arr[r+2][c-1]:
+            return True
         if oob(r, c - 2):
             return False
         if  not arr[r][c - 2] and not arr[r + 1][c - 1] and not arr[r - 1][c - 1]:
             return True
         return False
     elif dk == 1:
+        if r==-2 and arr[r+2][c+1]:
+            return True
         if oob(r, c + 2):
             return False
         if not arr[r][c + 2] and not arr[r + 1][c + 1] and not arr[r - 1][c + 1]:
@@ -62,37 +66,56 @@ DIR = (-1, 0), (0, 1), (1, 0), (0, -1)
 gol_info = [0]*(K+1)
 answer = 0
 for i in range(1, K + 1):
-    cc, d = map(int, input().split())
-    cr = -2
-    cc -= 1
+    c, d = map(int, input().split())
+    c-=1
+    # cr = -2
+    # cc -= 1
+    mxr = 0
+    ans_d = -1
+    #그냥 다 가보기
+    for cc in range(1, C-1):
+        dk = d
+        cr = -2
+        while 1:
+            if can_move(cr, cc, 2):
+                cr += 1
+            elif can_move(cr, cc, 3) and can_move(cr, cc - 1, 2):
+                cr += 1
+                cc -= 1
+                dk = (dk - 1) % 4
 
-    while 1:
-        if can_move(cr, cc, 2):
-            cr += 1
-        elif can_move(cr, cc, 3) and can_move(cr, cc - 1, 2):
-            cr += 1
-            cc -= 1
-            d = (d - 1) % 4
+            elif can_move(cr, cc, 1) and can_move(cr, cc + 1, 2):
+                cr += 1
+                cc += 1
+                dk= (dk + 1) % 4
+            else:
+                break
+            if cr == R-2:
+                break
 
-        elif can_move(cr, cc, 1) and can_move(cr, cc + 1, 2):
-            cr += 1
-            cc += 1
-            d = (d + 1) % 4
-        else:
-            break
-        if cr == R-2:
-            break
-
-    if cr<1:
+        if cr>mxr:
+            mxr = cr
+            mxc = cc
+        elif cr==mxr and abs(c-cc) < abs(c-mxc):
+            mxc = cc
+        elif cr==mxr and abs(c-cc)==abs(c-mxc):
+            mxc = min(cc, mxc)
+    if mxc < c:
+        ans_d = (d-(c-mxc))%4
+    elif mxc>c:
+        ans_d = (d+mxc-c)%4
+    if mxr<1:
         arr = [[0]*C for _ in range(R)]
         continue
-    arr[cr][cc] = i
+    arr[mxr][mxc] = i
     for di, dj in DIR:
-        arr[cr+di][cc+dj] = i
+        arr[mxr+di][mxc+dj] = i
 
-    gol_info[i] = (cr, cc, d)
+    gol_info[i] = (mxr, mxc, ans_d)
+
+
     visited = [0]*(K+1)
-    tmp = move_to_exit(cr, cc, d)+1
+    tmp = move_to_exit(mxr, mxc, ans_d)+1
     answer += tmp
 
 print(answer)
