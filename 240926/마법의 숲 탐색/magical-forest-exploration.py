@@ -59,6 +59,23 @@ def move_to_exit(r, c, d):
     mx = max(r+1, mx)
     return mx
 
+def move(cr, cc, d):
+    while 1:
+        if can_move(cr, cc, 2):  # 남쪽 이동 가능하면
+            cr += 1
+        elif can_move(cr, cc, 3) and can_move(cr, cc - 1, 2):  # 서쪽 이동 가능하면
+            cr += 1
+            cc -= 1
+            d = (d - 1) % 4
+        elif can_move(cr, cc, 1) and can_move(cr, cc + 1, 2):  # 동쪽 이동 가능하면
+            cr += 1
+            cc += 1
+            d = (d + 1) % 4
+        else:  # 다 불가능
+            break
+        if cr == R-2:
+            break
+    return cr, cc, d
 
 R, C, K = map(int, input().split())
 arr = [[0] * C for _ in range(R)]
@@ -66,44 +83,44 @@ DIR = (-1, 0), (0, 1), (1, 0), (0, -1)
 gol_info = [0]*(K+1)
 answer = 0
 for i in range(1, K + 1):
+    # print(f"+------------------------{i}-------------------------")
     c, d = map(int, input().split())
     c-=1
     # cr = -2
     # cc -= 1
     mxr = 0
+    mxc = c
     ans_d = -1
     #그냥 다 가보기
-    for cc in range(1, C-1):
-        dk = d
-        cr = -2
-        while 1:
-            if can_move(cr, cc, 2):
-                cr += 1
-            elif can_move(cr, cc, 3) and can_move(cr, cc - 1, 2):
-                cr += 1
-                cc -= 1
-                dk = (dk - 1) % 4
+    br = -2
+    # 내자리부터 서쪽까지 가보기
+    for cc in range(c, 0, -1):
+        tr, tc, td = move(-2, cc, d)
+        if br == tr:
+            break
+        if mxr<tr:
+            mxr= tr
+            mxc = tc
+            ans_d = td
 
-            elif can_move(cr, cc, 1) and can_move(cr, cc + 1, 2):
-                cr += 1
-                cc += 1
-                dk= (dk + 1) % 4
-            else:
+    #동쪽 보기
+    if mxr==-1:
+        br = -2
+        for cc in range(c+1, C-1):
+            tr, tc, td = move(-2, cc, d)
+            if br == tr:
                 break
-            if cr == R-2:
-                break
+            if mxr < tr:
+                mxr = tr
+                mxc = tc
+                ans_d = td
 
-        if cr>mxr:
-            mxr = cr
-            mxc = cc
-        elif cr==mxr and abs(c-cc) < abs(c-mxc):
-            mxc = cc
-        elif cr==mxr and abs(c-cc)==abs(c-mxc):
-            mxc = min(cc, mxc)
     if mxc < c:
         ans_d = (d-(c-mxc))%4
     elif mxc>c:
         ans_d = (d+mxc-c)%4
+    else:
+        ans_d = d
     if mxr<1:
         arr = [[0]*C for _ in range(R)]
         continue
@@ -117,5 +134,22 @@ for i in range(1, K + 1):
     visited = [0]*(K+1)
     tmp = move_to_exit(mxr, mxc, ans_d)+1
     answer += tmp
+    # print(gol_info)
+    # print("tmp : ," , tmp)
+    # print()
+    # for k in range(R):
+    #     print(arr[k])
+    # print()
 
 print(answer)
+
+
+
+#  가장 남쪽에 도달해 더이상 이동할 수 없으면 정령은 골렘 내에서 상하좌우 인접한 칸으로 이동
+# 현재 위치하고 있는 골렘의 출구가 다른 골렘과 인접하고 있다면
+# 해당 출구를 통해 다른 골렘으로 이동할 수 있습니다.
+
+# 정령은 갈 수 있는 모든 칸 중 가장 남쪽의 칸으로 이동하고 이동을 완전히 종료
+
+
+# 정령의 최종 위치의 행 번호의 합
