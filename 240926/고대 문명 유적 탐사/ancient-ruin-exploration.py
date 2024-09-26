@@ -145,7 +145,6 @@ for k in range(K):
     if r==-1 and c==-1:
         break
 
-    # print(r, c, rotate_cnt)
     # 회전할 부분 복사 후 회전 - 원배열에 붙여넣기
     selected_tmp = [[] for _ in range(3)]
     for t in range(3):
@@ -155,7 +154,8 @@ for k in range(K):
     #     print(selected_tmp[u])
     # print("=====================")
 
-    selected_tmp = list(map(list, zip(*selected_tmp[::-1])))
+    for tt in range(rotate_cnt+1):
+        selected_tmp = list(map(list, zip(*selected_tmp[::-1])))
     # print("=============회전 후========== ")
     # for u in range(3):
     #     print(selected_tmp[u])
@@ -164,7 +164,7 @@ for k in range(K):
         arr[r - 1 + tt][c - 1:c + 2] = selected_tmp[tt][:]
     # for u in range(5):
     #     print(arr[u])
-    # print(answer)
+    # print('==================')
     ###
 
 
@@ -187,13 +187,24 @@ for k in range(K):
         #유물 획득하기
         answer += get_value()
 
+        # print("===========유물 획득 후 ==============")
+        # print("answer : ", answer)
+        # for u in range(5):
+        #     print(arr[u])
+
 
         # 새로운 조각 넣기
         new_piece()
+        # print("==========================")
+        # print("===========새로운 조각 넣은 후 ==============")
+        # for u in range(5):
+        #     print(arr[u])
 
+        # print("==========================")
         # 더 획득할 유물 있는지 확인하기 없으면 종료
         v = calculate_value(arr)
         if v==0:
+            # print("연쇄 종료")
             break
     if answer == 0:
         break
