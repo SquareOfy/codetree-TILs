@@ -24,7 +24,7 @@ def bfs():
     while q:
         cbr, cbc, crr, crc, bdi, bdj, rank= q.popleft()
 
-        if step==11:
+        if rank==10:
             return -1
         if bdi == -1:
             DIR = (-1, 0), (0, 1), (1, 0), (0, -1)
