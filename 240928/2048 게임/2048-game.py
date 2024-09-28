@@ -92,7 +92,9 @@ def dfs(level, arr, mx, bd):
         changed_arr, change2 = gravity(i, changed_arr)
         # printa(f"{DIR[i]}로 움직인 후 ", changed_arr)
         # 움직임 없으면 다음 dfs 부르지 말자
-        if change1 == 0 and change2 : continue
+        # if change1 == 0 and change2 :
+        #     print("안움직였다 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        #     continue
         dfs(level+1, changed_arr, new_mx, i)
 
 
