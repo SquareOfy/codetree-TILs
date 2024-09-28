@@ -5,9 +5,9 @@ Routine
 4. 테스트케이스 외에 고려해야할 사항 생각해보기 + 설계에 반영 : 딱히 없음
 5. 종이에 손설계 ok
 6. 주석으로 구현할 영역 정리 ok
-7. 구현
-8.테스트케이스 단계별 디버깅 확인
-9. 예외될 상황 테스트케이스 만들어서 확인
+7. 구현 ok
+8.테스트케이스 단계별 디버깅 확인 ok
+9. 예외될 상황 테스트케이스 만들어서 확인 no
 
 Debugging CheckPoint
 - N, M / 행 열 index 오타 실수 점검
@@ -42,106 +42,185 @@ def printa(string, arr):
         print(arr[k])
     print()
 
-#dfs
-def gravity(d, arr):
-    di, dj = DIR[d]
-    st, ed, step = idx_dict[d]
-    cnt = 0
+
+def gravity(i, arr):
+    di, dj = DIR[i]
+    st, ed, step = idx_dict[i]
+    new_arr = [[0]*N for _ in range(N)]
+    #gravity는 ed를 포함해야해
     if di:
         for c in range(N):
+            #채울 지점
             idx = st
             for r in range(st, ed+step, step):
-                if arr[r][c] ==0: continue
-                arr[idx][c] = arr[r][c]
-                if idx!= r:
-                    arr[r][c] = 0
-                    cnt += 1
-                idx += step
+                if arr[r][c]==0:
+                    continue
+                new_arr[idx][c] = arr[r][c]
 
-
-        # for k in range(N):
-        #     print(arr[k])
-        # print()
-
+                idx+=step
     else:
         for r in range(N):
             idx = st
             for c in range(st, ed+step, step):
                 if arr[r][c] ==0: continue
-                if idx != c:
-                    arr[r][idx] = arr[r][c]
-                    arr[r][c] = 0
-                    cnt+=1
-                idx += step
-    return arr, cnt
-
-def dfs(level, arr, mx, bd):
-    global answer
-    # level 5일 때 return .
-    if level == 5:
-        # printa("완료 후 !! ", arr)
-        answer = max(mx, answer)
-        return
-    #상하좌우 중에 움직여보기
-    for i in range(4):
-        if i==bd: continue
-        # printa("움직이기 전 !!!!!!!!!!!!!!", arr)
-        #수 합치면서 mx 가져오기
-        changed_arr, new_mx, change1 = merge(i, arr, mx)
-        #gravity
-        changed_arr, change2 = gravity(i, changed_arr)
-        # printa(f"{DIR[i]}로 움직인 후 ", changed_arr)
-        # 움직임 없으면 다음 dfs 부르지 말자
-        # if change1 == 0 and change2 :
-        #     print("안움직였다 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        #     continue
-        dfs(level+1, changed_arr, new_mx, i)
+                new_arr[r][idx] = arr[r][c]
+                idx+= step
+    return new_arr
 
 
-#merge
-def merge(d, arr, mx):
+
+def merge_number(i, arr, mx):
+
+    di, dj = DIR[i]
+    st, ed, step = idx_dict[i]
     result = mx
-    st, ed, step = idx_dict[d]
-    change = 0
-    di, dj = DIR[d]
-
     if di:
         for c in range(N):
             for r in range(st, ed, step):
-                if arr[r][c] ==0: continue
-                if arr[r][c] == arr[r-di][c]:
+                if arr[r][c] == arr[r+step][c]:
                     arr[r][c] *= 2
-                    arr[r-di][c] = 0
+                    arr[r+step][c] = 0
                     result = max(arr[r][c], result)
-                    change+=1
-
     else:
         for r in range(N):
             for c in range(st, ed, step):
-                if arr[r][c] ==0: continue
                 if arr[r][c] == arr[r][c+step]:
-                    arr[r][c] *= 2
+                    arr[r][c]*=2
                     arr[r][c+step] =0
                     result = max(arr[r][c], result)
-                    change+=1
-    return arr, result, change
+    return arr, result
 
 
 
-#gravity
+
+def dfs(level, arr, mx):
+    global answer
+    if level == 5:
+        answer = max(answer, mx)
+        return
+
+    for i in range(4):
+        changed_arr = gravity(i, arr)
+        changed_arr, new_mx =  merge_number(i, changed_arr, mx)
+        changed_arr = gravity(i, changed_arr)
+        dfs(level+1, changed_arr,new_mx)
 
 
-#입력 받기
 N = int(input())
 arr = [list(map(int, input().split())) for _ in range(N)]
+DIR = (-1, 0), (0, 1), (1, 0), (0, 1)
 idx_dict = {0:(0, N-1, 1), 1:(N-1, 0, -1), 2:(N-1, 0, -1), 3:(0, N-1, 1)}
-DIR = (-1, 0), (0, 1), (1, 0), (0, -1)
 answer = 0
 for i in range(N):
     for j in range(N):
-        if arr[i][j]>answer:
-            answer = arr[i][j]
-#함수 실행
-dfs(0, arr, answer, -1)
-#출력
+        answer = max(arr[i][j], answer)
+dfs(0, arr, 0)
 print(answer)
+
+
+
+
+# #dfs
+# def gravity(d, arr):
+#     di, dj = DIR[d]
+#     st, ed, step = idx_dict[d]
+#     cnt = 0
+#     if di:
+#         for c in range(N):
+#             idx = st
+#             for r in range(st, ed+step, step):
+#                 if arr[r][c] ==0: continue
+#                 arr[idx][c] = arr[r][c]
+#                 if idx!= r:
+#                     arr[r][c] = 0
+#                     cnt += 1
+#                 idx += step
+#
+#
+#         # for k in range(N):
+#         #     print(arr[k])
+#         # print()
+#
+#     else:
+#         for r in range(N):
+#             idx = st
+#             for c in range(st, ed+step, step):
+#                 if arr[r][c] ==0: continue
+#                 if idx != c:
+#                     arr[r][idx] = arr[r][c]
+#                     arr[r][c] = 0
+#                     cnt+=1
+#                 idx += step
+#     return arr, cnt
+#
+# def dfs(level, arr, mx, bd):
+#     global answer
+#     # level 5일 때 return .
+#     if level == 5:
+#         # printa("완료 후 !! ", arr)
+#         answer = max(mx, answer)
+#         return
+#     #상하좌우 중에 움직여보기
+#     for i in range(4):
+#         # if i==bd: continue
+#         printa("움직이기 전 !!!!!!!!!!!!!!", arr)
+#         changed_arr, change0 = gravity(i, arr)
+#         #수 합치면서 mx 가져오기
+#         changed_arr, new_mx, change1 = merge(i, changed_arr, mx)
+#         #gravity
+#         changed_arr, change2 = gravity(i, changed_arr)
+#         printa(f"{DIR[i]}로 움직인 후 ", changed_arr)
+#         # 움직임 없으면 다음 dfs 부르지 말자
+#         # if change1 == 0 and change2 :
+#         #     print("안움직였다 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+#         #     continue
+#         dfs(level+1, changed_arr, new_mx, i)
+#
+#
+# #merge
+# def merge(d, arr, mx):
+#     result = mx
+#     st, ed, step = idx_dict[d]
+#     change = 0
+#     di, dj = DIR[d]
+#
+#     if di:
+#         for c in range(N):
+#             for r in range(st, ed, step):
+#                 if arr[r][c] ==0: continue
+#                 if arr[r][c] == arr[r-di][c]:
+#                     arr[r][c] *= 2
+#                     arr[r-di][c] = 0
+#                     result = max(arr[r][c], result)
+#                     change+=1
+#
+#     else:
+#         for r in range(N):
+#             for c in range(st, ed, step):
+#                 if arr[r][c] ==0: continue
+#                 if arr[r][c] == arr[r][c+step]:
+#                     arr[r][c] *= 2
+#                     arr[r][c+step] =0
+#                     result = max(arr[r][c], result)
+#                     change+=1
+#     return arr, result, change
+#
+#
+#
+# #gravity
+#
+#
+# #입력 받기
+# N = int(input())
+# arr = [list(map(int, input().split())) for _ in range(N)]
+# idx_dict = {0:(0, N-1, 1), 1:(N-1, 0, -1), 2:(N-1, 0, -1), 3:(0, N-1, 1)}
+# DIR = (-1, 0), (0, 1), (1, 0), (0, -1)
+# answer = 0
+# for i in range(N):
+#     for j in range(N):
+#         if arr[i][j]>answer:
+#             answer = arr[i][j]
+# #함수 실행
+# dfs(0, arr, answer, -1)
+# #출력
+# print(answer)
