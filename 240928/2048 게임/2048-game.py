@@ -79,17 +79,20 @@ def dfs(level, arr, mx, bd):
     global answer
     # level 5일 때 return .
     if level == 5:
+        # printa("완료 후 !! ", arr)
         answer = max(mx, answer)
         return
     #상하좌우 중에 움직여보기
     for i in range(4):
         if i==bd: continue
+        # printa("움직이기 전 !!!!!!!!!!!!!!", arr)
         #수 합치면서 mx 가져오기
-        changed_arr, new_mx = merge(i, arr, mx)
+        changed_arr, new_mx, change1 = merge(i, arr, mx)
         #gravity
-        changed_arr, change = gravity(i, changed_arr)
+        changed_arr, change2 = gravity(i, changed_arr)
+        # printa(f"{DIR[i]}로 움직인 후 ", changed_arr)
         # 움직임 없으면 다음 dfs 부르지 말자
-        if change == 0: continue
+        if change1 == 0 and change2 : continue
         dfs(level+1, changed_arr, new_mx, i)
 
 
@@ -97,7 +100,7 @@ def dfs(level, arr, mx, bd):
 def merge(d, arr, mx):
     result = mx
     st, ed, step = idx_dict[d]
-
+    change = 0
     di, dj = DIR[d]
 
     if di:
@@ -108,6 +111,7 @@ def merge(d, arr, mx):
                     arr[r][c] *= 2
                     arr[r-di][c] = 0
                     result = max(arr[r][c], result)
+                    change+=1
 
     else:
         for r in range(N):
@@ -117,7 +121,8 @@ def merge(d, arr, mx):
                     arr[r][c] *= 2
                     arr[r][c+step] =0
                     result = max(arr[r][c], result)
-    return arr, result
+                    change+=1
+    return arr, result, change
 
 
 
