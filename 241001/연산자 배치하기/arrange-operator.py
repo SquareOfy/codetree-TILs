@@ -27,6 +27,7 @@ def dfs(level, num):
     if level == N:
         mn_ans = min(mn_ans, num)
         mx_ans = max(mx_ans, num)
+
         return
 
     for i in range(3):
@@ -42,9 +43,9 @@ def dfs(level, num):
 N = int(input())
 numbers = list(map(int, input().split()))
 mn_ans = 1e9
-mx_ans = -1e9
+mx_ans = int(-1e9)
 
 cnt_lst = list(map(int, input().split()))
 #함수 실행
 dfs(1, numbers[0])
-print(mn_ans, mx_ans)
+print(int(mn_ans), int(mx_ans))
