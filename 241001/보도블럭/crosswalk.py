@@ -14,27 +14,42 @@
 경사로를 놓은 곳에 또 경사로를 놓은 경우
 """
 def is_possible_row(i):
+    # print(f"================={i } 행 check======================= ")
     for j in range(1, N):
-        if visited[i][j]: continue
         if abs(arr[i][j-1] - arr[i][j]) >1:
+            # print("많이 차이남")
+            # print()
             return False
         if arr[i][j-1] == arr[i][j]: continue
         if arr[i][j-1]>arr[i][j]:
             #앞으로 총 L칸 확인하기
-            if j+L >=N:
+            if j+L-1 >=N:
+                # print(j)
+                # print(j+L)
+                # print("앞에 L 공간 부족")
+                # print()
                 return False
             for k in range(0, L):
                 if arr[i][j+k] != arr[i][j] or visited[i][j+k]:
+                    # print("울퉁불퉁 또는 경사로 중복")
+                    # print()
                     return False
                 visited[i][j+k] = 1
         elif arr[i][j-1]<arr[i][j]:
             #뒤로 총 L칸 확인하기 (나 미포함)
             if j-L < 0:
+                # print(j-L)
+                # print("뒤에 L 공간 부족")
+                # print()
                 return False
             for k in range(1, L+1):
-                if arr[i][j-k] != arr[i][j] or visited[i][j-k]:
+                if arr[i][j-k] != arr[i][j-1] or visited[i][j-k]:
+                    # print("뒤에 울퉁불퉁 또는 경사로 중복")
+                    # print()
                     return False
                 visited[i][j-k] = 1
+    # print("통과")
+    # print('=======================================')
     return True
 
 def is_possible_col(j):
@@ -50,7 +65,6 @@ def is_possible_col(j):
                 if arr[i+k][j] != arr[i][j] or visited[i+k][j]:
                     return False
                 visited[i+k][j] = 1
-            visited[i][j] =1
         elif arr[i-1][j]<arr[i][j]:
             #뒤로 총 L칸 확인하기
             if i-L < 0:
@@ -60,7 +74,6 @@ def is_possible_col(j):
                 if arr[i-k][j] != arr[i-1][j] or visited[i-k][j]:
                     return False
                 visited[i-k][j] = 1
-            visited[i][j] =1
     return True
 
 
