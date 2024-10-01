@@ -59,7 +59,7 @@ def is_possible_col(j):
         if arr[i-1][j] == arr[i][j]: continue
         if arr[i-1][j]>arr[i][j]:
             #앞으로 총 L칸 확인하기
-            if i+L >=N:
+            if i+L-1 >=N:
                 return False
             for k in range(0, L):
                 if arr[i+k][j] != arr[i][j] or visited[i+k][j]:
@@ -68,12 +68,19 @@ def is_possible_col(j):
         elif arr[i-1][j]<arr[i][j]:
             #뒤로 총 L칸 확인하기
             if i-L < 0:
+                # print(j - L)
+                # print("뒤에 L 공간 부족")
+                # print()
                 return False
 
             for k in range(1, L+1):
                 if arr[i-k][j] != arr[i-1][j] or visited[i-k][j]:
+                    # print("뒤에 울퉁불퉁 또는 경사로 중복")
+                    # print()
                     return False
                 visited[i-k][j] = 1
+    # print("통과")
+    # print('=======================================')
     return True
 
 
