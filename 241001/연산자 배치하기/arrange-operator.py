@@ -41,8 +41,8 @@ def dfs(level, num):
 #입력
 N = int(input())
 numbers = list(map(int, input().split()))
-mn_ans = max(numbers)**N
-mx_ans = -max(numbers)**N
+mn_ans = 1e9
+mx_ans = -1e9
 
 cnt_lst = list(map(int, input().split()))
 #함수 실행
