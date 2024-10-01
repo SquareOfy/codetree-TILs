@@ -39,7 +39,7 @@ def check_visited(r, c, dir_lst, v):
                 break
     return cnt
 # dfs
-def dfs(level, value):
+def dfs(level):
     if level == K:
         global answer
         cnt = 0
@@ -56,9 +56,9 @@ def dfs(level, value):
 
     for dir_lst in dir_dict[mal_num]:
 
-        cnt = check_visited(r, c, dir_lst, 1)
+        check_visited(r, c, dir_lst, 1)
 
-        dfs(level+1, value+cnt)
+        dfs(level+1)
         check_visited(r, c, dir_lst, -1)
 
 
@@ -88,5 +88,5 @@ for i in range(N):
 
 
 K = len(my_mal_lst)
-dfs(0, 0)
+dfs(0)
 print(answer)
