@@ -29,7 +29,7 @@ k 사이클 이후에 살아남은 바이러스의 수
 N, M, K = map(int, input().split())
 plus = [list(map(int, input().split())) for _ in range(N)]
 virus_arr = [[[] for _ in range(N)] for _ in range(N)]
-arr = [[5]*N for _ in range(5)]
+arr = [[5]*N for _ in range(N)]
 DIR = (-1, -1), (-1, 1), (1, -1), (1, 1), (1, 0), (0, 1), (-1, 0), (0, -1)
 for m in range(M):
     r, c, a = map(int, input().split())
