@@ -58,14 +58,19 @@ while 1:
                 e_sum, lst = bfs(i, j)
                 if lst:
                     eggs_lst.append((e_sum, lst))
-
+    # print(eggs_lst)
     #lst 비어있으면 종료
     if not eggs_lst:
         break
     #아니면 돌면서 배열 갱신
     for sum_, lst in eggs_lst:
-        v = sum_ // len(eggs_lst)
+        v = sum_ // len(lst)
         for r, c in lst:
             arr[r][c] = v
+    # print()
+    # print("=========================")
+    # for k in range(N):
+    #     print(arr[k])
+    # print()
     answer += 1
 print(answer)
