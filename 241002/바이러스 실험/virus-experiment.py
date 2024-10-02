@@ -46,7 +46,7 @@ for k in range(K):
             tmp = []
             for a in virus_arr[i][j]:
                 if arr[i][j]-a <0:
-                    die_lst.append((i, j, arr[i][j]//2))
+                    die_lst.append((i, j, a//2))
                 else:
                     arr[i][j] -= a
                     tmp.append(a+1)
@@ -55,7 +55,19 @@ for k in range(K):
     #양분 뿌리기
     for i, j, v in die_lst:
         arr[i][j] += v
+    # print("====================바이러스 나이먹고 양분 plus ==================")
+    # print("죽은 바이러스 " , die_lst)
 
+    # for i in range(N):
+    #     print(arr[i])
+    #
+    # print(" == ")
+    #
+    # for i in range(N):
+    #     print(virus_arr[i])
+    #
+    # print()
+    # print("=======================")
 
     #바이러스 번식과 양분추가
     for i in range(N):
@@ -76,6 +88,7 @@ for k in range(K):
             if not virus_arr[i][j]: continue
             virus_arr[i][j].sort()
 
+    # print("====================바이러스 번식. 양분추가. 정렬 ==================")
     # for i in range(N):
     #     print(arr[i])
     #
