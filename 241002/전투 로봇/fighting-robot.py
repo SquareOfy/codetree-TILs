@@ -47,10 +47,11 @@ def find_monster():
     arank = N*N
     while q:
         cr, cc, rank = q.popleft()
-        if arr[cr][cc] != 0 and arr[cr][cc] < level:
-            if (ar, ac)>(cr, cc):
+        if arr[cr][cc] != 0 and arr[cr][cc] < level and arank>=rank:
+            if arank>rank or (arank==rank and (ar, ac)>(cr, cc)):
                 ar, ac = cr, cc
                 arank = rank
+
             continue
         for di, dj in (-1, 0), (0, 1), (1, 0), (0, -1):
             du, dv = cr+di, cc+dj
@@ -68,6 +69,7 @@ for i in range(N):
     for j in range(N):
         if arr[i][j] == 9:
             r, c = i, j
+            arr[i][j] = 0
 level = 2
 cnt = 0
 answer = 0
