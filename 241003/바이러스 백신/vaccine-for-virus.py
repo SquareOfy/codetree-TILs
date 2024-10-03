@@ -39,11 +39,12 @@ def bfs(lst):
                 du, dv = cr+di, cc+dj
                 if du<0 or dv<0 or du>=N or dv>=N:
                     continue
-                if visited[du][dv] or arr[du][dv] != 0:
+                if visited[du][dv] or arr[du][dv] ==1:
                     continue
                 visited[du][dv] = 1
-                cnt += 1
                 nq.append((du, dv))
+                if arr[du][dv] == 0:
+                    cnt += 1
         time+=1
         if cnt==virus_cnt:
             break
