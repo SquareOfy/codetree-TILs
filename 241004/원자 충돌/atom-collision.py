@@ -1,20 +1,3 @@
-"""
-
-Routine
-1. 문제 그냥 정독 ok
-2. 문제 주석 복사 ok
-4. 테스트케이스 외에 고려해야할 사항 생각해보기 + 설계에 반영
-    : deque 쓰자
-    : N칸 도착하자마자 내리는 거 놓치지 말기!!
-5. 종이에 손설계 : ok
-6. 주석으로 구현할 영역 정리 : ok
-7. 구현 : ok
-8.테스트케이스 단계별 디버깅 확인
-    : 답 다르길래 deque 사람 움직이기 전 후로 프린트+종이테케 따라가기로
-    틀린 부분 찾음
-9. 1시간 지났는데 디버깅 헤매는 중이면 리셋!!
-"""
-
 N, M, K = map(int, input().split())
 arr = [[[] for _ in range(N)] for _ in range(N)]
 DIR = (-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)
@@ -23,7 +6,10 @@ for m in range(M):
     x -= 1
     y -= 1
     arr[x][y].append((m, s, d))
-
+# print("=================초기 상태 ==================")
+# for t in range(N):
+#     print(arr[t])
+# print("=============================================")
 for k in range(K):
     tmp = [[[] for _ in range(N)] for _ in range(N)]
     for i in range(N):
@@ -45,8 +31,8 @@ for k in range(K):
             for m, s, d in tmp[i][j]:
                 mm += m
                 ss += s
-                multiple_d *= d
-                sum_d += d
+                multiple_d *= (d%2)
+                sum_d += (d%2)
 
             new_m = mm//5
             new_s = ss//len(tmp[i][j])
@@ -63,7 +49,8 @@ for k in range(K):
     for i in range(N):
         for j in range(N):
             arr[i][j] = tmp[i][j][:]
-        # print(arr[i])
+    #     print(arr[i])
+    # print("======================================")
 
 answer = 0
 for i in range(N):
