@@ -41,9 +41,13 @@ while 1:
     down = moving_q[N-1]
 
     #N-1에 있는 사람 내리기
-    if visited[down]:
-        visited[down] =  0
-
+    visited[down] = 0
+    # print()
+    # print(moving_q)
+    # print(visited)
+    # print(people_lst)
+    # print("stable : ", stability_lst)
+    # print()
 
     new_people = []
     #사람이동 2*N 부터 순차적으로 볼 것.
@@ -53,12 +57,15 @@ while 1:
             nxt = (i+1)%(2*N)
             #안정성 0이거나 앞 칸에 사람 있으면 이동 불가
             if stability_lst[nxt] ==0 or visited[nxt]:
+                new_people.append(i)
                 continue
-            #앞칸 N-1이면 안정성만 -1
+            #앞칸 내리는 위치면 안정성만 -1
             #아니면 visited 처리도 하기
+
             if nxt != down:
                 visited[nxt] = 1
                 new_people.append(nxt)
+
             stability_lst[nxt] -= 1
 
             #안정성 앞자리 0 되면 cnt+1
@@ -79,5 +86,3 @@ while 1:
     if cnt>=K:
         break
 print(answer)
-
-print()
