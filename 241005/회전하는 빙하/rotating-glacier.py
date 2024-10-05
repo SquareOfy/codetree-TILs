@@ -41,6 +41,8 @@ N = 2**n
 arr = [list(map(int, input().split())) for _ in range(N)]
 order_lst = list(map(int, input().split()))
 DIR = (-1, 0), (0, 1), (1, 0), (0, -1)
+ice = [[0] * N for _ in range(N)]
+
 for q in order_lst:
     if q!=0:
         L = 2**q
@@ -53,7 +55,6 @@ for q in order_lst:
     #     print(arr[i])
     # print()
     ############################
-    tmp = [[0]*N for _ in range(N)]
     for i in range(N):
         for j in range(N):
             if arr[i][j]==0: continue
@@ -67,11 +68,12 @@ for q in order_lst:
                 if cnt==3:
                     break
             if cnt<3:
-                tmp[i][j] = arr[i][j]- 1
-            else:
-                tmp[i][j] = arr[i][j]
+                ice[i][j] -=1
     for i in range(N):
-        arr[i] = tmp[i][:]
+        for j in range(N):
+            arr[i][j] += ice[i][j]
+            ice[i][j] = 0
+
 
 
 mx_size = 0
