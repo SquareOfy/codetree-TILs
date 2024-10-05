@@ -41,6 +41,7 @@ while 1:
         for j in range(N):
             if arr[i][j] == 0: continue
             cnt_arr[i][j] = [arr[i][j], K]
+    # pr_cnt_arr("냄새 뿌린 후 ")
 
     # 종료조건
     if cnt == 1:
@@ -87,16 +88,18 @@ while 1:
                         tmp[du][dv] = n #다른 놈이 와있을리 없으니 그냥 내가 가기
                         player_dir_lst[n] = d
                         break
-
+    # pr_arr("이동 완료 후" , tmp)
     # 이동 완료 후 기존 cnt배열 감소시키기
     for i in range(N):
         for j in range(N):
             if cnt_arr[i][j][0]!=0:
                 cnt_arr[i][j][1]-=1
-                if cnt_arr[i][j]==0:
+                if cnt_arr[i][j][1]==0:
                     cnt_arr[i][j] = [0, 0]
 
     # tmp에 사람 있으면 갱신하기
     for i in range(N):
         arr[i] = tmp[i][:]
+
+
 print(turn)
