@@ -31,15 +31,17 @@ def bfs(i, j):
     #밑에서부터 -2 찾아서 끌어내릴 숫자 찾으면 끌어내리는 방식
 def gravity(arr):
     for c in range(N):
-        r = N
+        #밑에서부터 보면서 빈칸이 나오는 순간(r)에 땡겨올 폭탄(0 또는 1~M)(nr) 찾아서 땡기기
+        r = N # 1빼고 시작할거라 1부터 시작
         while r>0:
             r -= 1
             if arr[r][c] != -2: continue
             nr = r-1
             while not oob(nr, c) and arr[nr][c] == -2:
                 nr -= 1
+            #땡겨올 애가 없으면 다음칸 보기
             if oob(nr, c) or arr[nr][c] == -1:
-                r = nr-1
+                r = nr
                 continue
             arr[r][c] = arr[nr][c]
             arr[nr][c] = -2
@@ -67,8 +69,8 @@ while 1:
     bomb_cand_lst = []
     #1. 폭탄 리스트 찾아서 터질 폭탄 구하기
     #전체 돌며 visited
-    for i in range(N):
-        for j in range(N):
+    for i in range(N-1, -1, -1): #행이 클수록 기준점
+        for j in range(N): #열이 작을수록 기준점
             if not visited[i][j] and arr[i][j]>0:
                 lst, cnt = bfs(i, j)
                 if not lst: continue
