@@ -43,10 +43,35 @@ def make_route():
 def make_lst():
     for i in range(1, N*N):
         r, c = route_lst[i]
-        if arr[r][c] == 0: continue
         lst.append(arr[r][c])
-    while len(lst)<N*N:
-        lst.append(0)
+
+def pull():
+    global lst
+    for i in range(1, len(lst)):
+        if lst[i]==0:
+            for j in range(i+1, len(lst)):
+                if lst[j]!=0:
+                    lst = lst[:i]+lst[j:]+lst[i:j]
+                    break
+
+def kill_monster():
+    global answer
+    flag = False
+    bf = -1
+    cnt = 0
+    for i in range(1, len(lst)):
+        if bf != lst[i]:
+            if cnt >=4:
+                for c in range(1, cnt+1):
+                    lst[i-c] = 0
+                answer += bf*cnt
+                flag = True
+            bf = lst[i]
+            cnt = 1
+        else:
+            cnt+=1
+    return flag
+
 
 #입력
 N, M = map(int, input().split())
@@ -58,83 +83,49 @@ lst = [-1]
 answer = 0
 #초기 lst 세팅
 make_route()
-# print(route_lst)
-# print(len(route_lst))
+
 make_lst()
 
 mr, mc = N//2, N//2
 #라운드
 for m in range(M):
     d, p = map(int, input().split())
-
     #공격하고 그자리 땡기기 ! (없애버려)
     di, dj = DIR[d]
     nr, nc = mr, mc
-    for k in range(p):
 
+    #공격할 곳 0으로 만들기
+    for i in range(p):
         nr += di
         nc += dj
         idx = idx_arr[nr][nc]
 
-        if lst[idx] == 0:
-            continue
-        answer += lst[idx]
-        lst[idx:idx+1]=[]
-        lst.append(0)
-
-    #while flag로 관리
-    #앞에서부터 4개 이상 연속인 애들 개수 세서 점수 더하기 + 없애기
-    flag = True
-
-    new_lst = [-1]
-    while flag:
-        bf = -1
-        cnt = 0
-        flag = False
-        for i in range(1, len(lst)):
-            last_flag = False
-            if lst[i]==0:
-                continue
-            if bf == lst[i]:
-                cnt += 1
-            else:
-                score = bf
-                bf = lst[i]
-                if cnt>=4:
-                    flag = True
-                    last_flag= True
-                    answer += cnt*score
-                else:
-                    new_lst.extend([score]*cnt)
-                cnt = 1
-
-        if not flag:
+        if nr<0 or nc<0 or nr>=N or nc>=N: break
+        if idx>= len(lst):
             break
-        if not last_flag:
-            new_lst.extend([bf]*cnt)
-        lst = new_lst[:]
-        new_lst = [-1]
-    lst = lst[:]+[0]*(N*N-len(lst))
+        answer += lst[idx]
+        lst[idx] = 0
+    pull()
+    #4개 이상 연속된 수가 없을 때까지 계속 부셔
+    while 1:
+        result = kill_monster()
+        if not result:
+            break
+        pull()
 
-
-    #배열 개수, 숫자 만들기
+    #배열 숫자 바꾸기
+    new_lst = [-1]
     bf = -1
     cnt = 0
-    new_lst = [-1]
     for i in range(1, len(lst)):
-        if lst[i]==0:
-            continue
-        if bf == lst[i]:
-            cnt += 1
+        flag= False
+        if lst[i]==bf:
+            cnt+=1
         else:
-            if cnt!=0:
+            if cnt>0:
                 new_lst.extend([cnt, bf])
-                if len(new_lst)>=N*N:
-                    lst = new_lst[:N*N+1]
-                    break
             bf = lst[i]
             cnt = 1
-
-    if cnt!=0: new_lst.extend([cnt, bf])
-    lst = new_lst[:]+[0]*(N*N-len(new_lst))
+    if cnt>0: new_lst.extend([cnt, bf])
+    lst = new_lst[:]
 print(answer)
