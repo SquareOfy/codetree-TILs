@@ -99,7 +99,7 @@ for t in range(1, T+1):
                     # print(nr, nc)
                     if oob(nr, nc): continue
                     if nr == pr and nc == pc: continue
-                    if die_arr[nr][nc] == 0 or m-die_arr[nr][nc]>2:
+                    if die_arr[nr][nc] == 0:
                         new_monster_arr[nr][nc].append(nd)
                         break
                 else:
@@ -108,22 +108,28 @@ for t in range(1, T+1):
     for i in range(4):
         for j in range(4):
             monster_arr[i][j] = new_monster_arr[i][j][:]
+    # printa("현재 시체 상태", die_arr)
     # printa("몬스터 이동완료", monster_arr)
     selected = []
     mx_cnt = -1
     # 팩맨이동 구하기 (dfs구현)
-    # visited[pr][pc] = 1/
     dfs(0, pr, pc, 0, [])
-    # visited[pr][pc] = 0
+    # print("pr, pc : ", pr, pc)
     # print(selected)
     # 팩맨 이동결과 arr 에 반영
     for move in selected:
         di, dj = DIR[move]
         pr += di
         pc += dj
-        monster_arr[pr][pc] = []
-        die_arr[pr][pc] = t
+        if monster_arr[pr][pc]:
+            monster_arr[pr][pc] = []
+            die_arr[pr][pc] = 3
     # printa("이동방향 결정 후 이동", monster_arr)
+
+    for i in range(4):
+        for j in range(4):
+            if die_arr[i][j]:
+                die_arr[i][j]-=1
     for i in range(4):
         for j in range(4):
             for d in egg_arr[i][j]:
