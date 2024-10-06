@@ -119,7 +119,7 @@ for m in range(M):
         cnt = find_cnt(i)
         new_lst.extend([cnt, arr[r][c]])
         if len(new_lst)>=N*N-1:
-            new_lst = new_lst[:49]
+            new_lst = new_lst[:N*N]
             break
         for t in range(cnt):
             nr, nc = route_lst[i+t]
