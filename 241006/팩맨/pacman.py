@@ -78,29 +78,30 @@ visited = [[0] * 4 for _ in range(4)]
 for m in range(M):
     r, c, d = map(change_idx, input().split())
     monster_arr[r][c].append(d)
-
+# printa("초기 몬스터 ", monster_arr)
 for t in range(1, T+1):
     # 알 낳기
     for i in range(4):
         for j in range(4):
             for monster in monster_arr[i][j]:
                 egg_arr[i][j].append(monster)
-
+    # printa("알 부화 상태 ", egg_arr)
     # 몬스터 이동
     new_monster_arr = [[[] for _ in range(4)] for _ in range(4)]
     for i in range(4):
         for j in range(4):
             for d in monster_arr[i][j]:
-
+                # print("d : ", d , "이동 !! ")
                 for dk in range(8):
                     nd = (d + dk) % 8
                     di, dj = diagonal[nd]
                     nr, nc = i + di, j + dj
+                    # print(nr, nc)
                     if oob(nr, nc): continue
                     if nr == pr and nc == pc: continue
-                    if m - die_arr[nr][nc] <= 2: continue
-                    new_monster_arr[nr][nc].append(nd)
-                    break
+                    if die_arr[nr][nc] == 0 or m-die_arr[nr][nc]>2:
+                        new_monster_arr[nr][nc].append(nd)
+                        break
                 else:
                     new_monster_arr[i][j].append(d)
 
