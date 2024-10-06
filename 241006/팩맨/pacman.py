@@ -36,7 +36,12 @@
 def change_idx(i):
     return int(i) - 1
 
-
+def printa(string, arr):
+    print(f"============{string}=================")
+    for i in range(4):
+        print(arr[i])
+    print("=======================================")
+    print()
 def oob(i, j):
     return i < 0 or j < 0 or i >= 4 or j >= 4
 
@@ -102,14 +107,14 @@ for t in range(1, T+1):
     for i in range(4):
         for j in range(4):
             monster_arr[i][j] = new_monster_arr[i][j][:]
-
+    # printa("몬스터 이동완료", monster_arr)
     selected = []
-    mx_cnt = 0
+    mx_cnt = -1
     # 팩맨이동 구하기 (dfs구현)
-    visited[pr][pc] = 1
+    # visited[pr][pc] = 1/
     dfs(0, pr, pc, 0, [])
-    visited[pr][pc] = 0
-
+    # visited[pr][pc] = 0
+    # print(selected)
     # 팩맨 이동결과 arr 에 반영
     for move in selected:
         di, dj = DIR[move]
@@ -117,12 +122,14 @@ for t in range(1, T+1):
         pc += dj
         monster_arr[pr][pc] = []
         die_arr[pr][pc] = t
-
+    # printa("이동방향 결정 후 이동", monster_arr)
     for i in range(4):
         for j in range(4):
             for d in egg_arr[i][j]:
                 monster_arr[i][j].append(d)
             egg_arr[i][j] = []
+    # printa("알 부화 후 monster arr", monster_arr)
+
 
 answer = 0
 for i in range(4):
