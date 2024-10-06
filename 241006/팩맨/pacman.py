@@ -46,7 +46,7 @@ def oob(i, j):
     return i < 0 or j < 0 or i >= 4 or j >= 4
 
 
-def dfs(level, r, c, cnt, lst):
+def dfs(level, r, c, cnt, lst, arr):
     global mx_cnt, selected
     if level == 3:
         if mx_cnt < cnt:
@@ -54,14 +54,21 @@ def dfs(level, r, c, cnt, lst):
             selected = lst[:]
         return
 
+
     for dk in range(4):
         di, dj = DIR[dk]
         nr, nc = r + di, c + dj
         if oob(nr, nc): continue
-        if visited[nr][nc]: continue
-        visited[nr][nc] = 1
-        dfs(level + 1, nr, nc, cnt + len(monster_arr[nr][nc]), lst +[dk])
-        visited[nr][nc] = 0
+        tmp = [[[] for _ in range(4)] for _ in range(4)]
+        for i in range(4):
+            for j in range(4):
+                tmp[i][j] = arr[i][j][:]
+        # if visited[nr][nc]: continue
+        plus = len(tmp[nr][nc])
+        tmp[nr][nc] = []
+        # visited[nr][nc] = 1
+        dfs(level + 1, nr, nc, cnt + plus, lst +[dk], tmp)
+        # visited[nr][nc] = 0
 
 
 M, T = map(int, input().split())
@@ -113,7 +120,7 @@ for t in range(1, T+1):
     selected = []
     mx_cnt = -1
     # 팩맨이동 구하기 (dfs구현)
-    dfs(0, pr, pc, 0, [])
+    dfs(0, pr, pc, 0, [], monster_arr)
     # print("pr, pc : ", pr, pc)
     # print(selected)
     # 팩맨 이동결과 arr 에 반영
