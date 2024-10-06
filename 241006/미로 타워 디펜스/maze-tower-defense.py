@@ -47,13 +47,22 @@ def make_lst():
 
 def pull():
     global lst
-    for i in range(1, len(lst)):
-        if lst[i]==0:
-            for j in range(i+1, len(lst)):
-                if lst[j]!=0:
-                    lst = lst[:i]+lst[j:]+lst[i:j]
-                    break
+    i = 1
+    # print("===========================")
+    # print(lst)
 
+    while i<len(lst):
+        if lst[i]!=0:
+            i+=1
+            continue
+        for j in range(i+1, len(lst)):
+            if lst[j]!=0:
+                lst[i], lst[j] = lst[j], lst[i]
+                # lst = lst[:i]+lst[j:]+lst[i:j]
+                break
+        i+=1
+    # print(lst)
+    # print("====================")
 def kill_monster():
     global answer
     flag = False
