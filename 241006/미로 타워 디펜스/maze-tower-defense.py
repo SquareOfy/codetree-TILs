@@ -45,12 +45,10 @@ def pull_arr():
         r, c = route_lst[i]
         #당길 숫자 찾기 !!
         if arr[r][c] ==0:
-            # print("r, c ", r, c)
             nk = i+1
             while nk<N*N-1:
                 nr, nc = route_lst[nk]
                 if arr[nr][nc] !=0:
-                    # print("찾음 : ", nr, nc)
                     break
                 nk+=1
             if nk<N*N-1 and arr[nr][nc]!=0:
@@ -93,17 +91,8 @@ for m in range(M):
         if nr<0 or nc <0 or nr>=N or nc>=N: continue
         answer += arr[nr][nc]
         arr[nr][nc] = 0
-
-    # for t in range(N):
-    #     print(arr[t])
     #죽인후 당기기
     pull_arr()
-    # print("answer : ", answer)
-    # print("======================")
-    # for t in range(N):
-    #     print(arr[t])
-    # print("======================")
-    # print()
 
     while 1:
         flag = False
@@ -120,18 +109,7 @@ for m in range(M):
         if not flag:
             break
 
-
         pull_arr()
-        # print("answer : " , answer)
-        # print("======================")
-        # for t in range(N):
-        #     print(arr[t])
-        # print("======================")
-    # print("======================")
-    # for t in range(N):
-    #     print(arr[t])
-    # print("======================")
-    # print()
 
     #숫자 새로 매기기
     new_lst = []
@@ -140,7 +118,7 @@ for m in range(M):
         if arr[r][c] ==0: continue
         cnt = find_cnt(i)
         new_lst.extend([cnt, arr[r][c]])
-        if len(new_lst)>=48:
+        if len(new_lst)>=N*N-1:
             new_lst = new_lst[:49]
             break
         for t in range(cnt):
@@ -148,15 +126,9 @@ for m in range(M):
             arr[nr][nc] = 0
 
 
-    arr = [[0]*N for _ in range(N)]
 
+    arr = [[0]*N for _ in range(N)]
     for i in range(len(new_lst)):
         nr, nc = route_lst[i]
         arr[nr][nc] = new_lst[i]
-
-    # print("======================")
-    # for t in range(N):
-    #     print(arr[t])
-    # print("======================")
-    # print()
 print(answer)
