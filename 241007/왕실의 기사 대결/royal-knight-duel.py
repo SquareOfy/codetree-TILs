@@ -47,7 +47,8 @@ def is_possible_push(num, d):
             if info_arr[du][dv] == 2:
                 return False
             if gisa_arr[du][dv] != 0:
-                push_lst.append(gisa_arr[du][dv])
+                if gisa_arr[du][dv] not in push_lst:
+                    push_lst.append(gisa_arr[du][dv])
                 if not is_possible_push(gisa_arr[du][dv], d):
                     return False
     elif dj:
@@ -56,7 +57,8 @@ def is_possible_push(num, d):
             if oob(du, dv): return False
             if info_arr[du][dv] == 2: return False
             if gisa_arr[du][dv] != 0:
-                push_lst.append(gisa_arr[du][dv])
+                if gisa_arr[du][dv] not in push_lst:
+                    push_lst.append(gisa_arr[du][dv])
                 if not is_possible_push(gisa_arr[du][dv], d):
                     return False
     return True
@@ -81,7 +83,7 @@ def move_gisa(num, d):
     elif dj:
         remove_c = c if dj > 0 else c + w - 1
         append_c = c + w if dj > 0 else c - 1
-
+        # print(append_c)
         for du in range(r, r + h):
             if gisa_arr[du][remove_c] == num:
                 gisa_arr[du][remove_c] = 0
@@ -134,9 +136,10 @@ for n in range(1, N + 1):
     for i in range(r, r + h):
         for j in range(c, c + w):
             gisa_arr[i][j] = n
-
+# printa("초기 기사 상태", gisa_arr)
 for q in range(Q):
     num, d = map(int, input().split())
+    # print("==================", num, d, "===================")
     if gisa_lst[num] == -1: continue
     push_lst = []
     if not is_possible_push(num, d):
