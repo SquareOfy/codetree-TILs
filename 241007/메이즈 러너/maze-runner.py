@@ -31,7 +31,7 @@ def get_square(i, j, er, ec):
     sc = max(max(j, ec)-l+1, 0)
     return l, sr, sc
 
-def get_roate_loc(sr, sc, l, x, y):
+def get_rotate_loc(sr, sc, l, x, y):
     tr = x-sr
     tc = y-sc
     return sr+tc, sc+(l-1-tr)
@@ -59,10 +59,6 @@ answer = 0
 
 
 for k in range(K):
-    # print(f"==========================={k}초 ================================")
-
-
-    # printa("이동 전 ", runner_info)
     #m명 이동
     for n in range(1, M+1):
         if finished_lst[n]:
@@ -85,9 +81,6 @@ for k in range(K):
                 runner_info[n] = (du, dv)
             break
 
-    # print("answer : ", answer)
-    # printa("이동 후 ", runner_info)
-    # print(finished_lst)
     if sum(finished_lst[1:]) == M:
         break
     #사각형 찾아 !!
@@ -104,8 +97,7 @@ for k in range(K):
             sr, sc = tsr, tsc
 
     tmp = [[0]*mn_l for _ in range(mn_l)]
-    # print("===============찾은 사각형 =================")
-    # print(sr, sc, mn_l)
+
     # 시계방향 90도 회전해
     for r in range(mn_l):
         tmp[r] = arr[sr+r][sc:sc+mn_l]
@@ -123,12 +115,9 @@ for k in range(K):
         x, y = runner_info[m]
         if x not in range(sr, sr+mn_l) or y not in range(sc, sc+mn_l):
             continue
-        nx, ny = get_roate_loc(sr, sc, mn_l, x, y)
+        nx, ny = get_rotate_loc(sr, sc, mn_l, x, y)
         runner_info[m] = (nx, ny)
-    er, ec = get_roate_loc(sr, sc, mn_l, er, ec)
-    # print("====================회전 후 ==================")
-    # printa("회전후", arr)
-    # print("사람 정보 ", runner_info)
-    # print(er, ec)
+    er, ec = get_rotate_loc(sr, sc, mn_l, er, ec)
+
 print(answer)
 print(er+1, ec+1)
