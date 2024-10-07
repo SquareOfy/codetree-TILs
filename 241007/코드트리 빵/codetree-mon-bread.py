@@ -32,7 +32,7 @@ def calculate_dist(r, c, sr, sc):
 
 
 def get_move_loc(i, j, gi, gj):
-    q = deque([(i, j, 0, -1, -1)])
+    q = deque([(i, j, 0, i, j)])
     visited = [[0] * N for _ in range(N)]
     visited[i][j] = 1
 
@@ -50,11 +50,37 @@ def get_move_loc(i, j, gi, gj):
                 q.append((du, dv, rank + 1, du, dv))
             else:
                 q.append((du, dv, rank + 1, fr, fc))
-
+    # return -1, -1
 
 def oob(i, j):
     return i < 0 or j < 0 or i >= N or j >= N
 
+
+def find_base(sr, sc):
+    q = deque([(sr, sc, 0)])
+    visited = [[0] * N for _ in range(N)]
+    visited[sr][sc] = 1
+    rr, rc = N, N
+    mn_dist = N*N
+
+    while q:
+        cr, cc, rank = q.popleft()
+        if arr[cr][cc] == 1:
+            if rank < mn_dist:
+                rr, rc = cr, cc
+                mn_dist = rank
+            elif rank == mn_dist and (rr, rc) > (cr, cc):
+                rr, rc = cr, cc
+            continue
+        for di, dj in DIR:
+            du, dv = cr + di, cc + dj
+            if oob(du, dv): continue
+            if visited[du][dv]: continue
+            if arr[du][dv]<0: continue
+            q.append((du, dv, rank+1))
+            visited[du][dv] = 1
+    # print("거리 : ", mn_dist)
+    return rr, rc
 
 # 인덱스 1부터 시작!!
 N, M = map(int, input().split())
@@ -70,56 +96,32 @@ for m in range(M):
     store_lst.append((x, y))
 
 
-def find_base(sr, sc):
-    q = deque([(sr, sc, 0)])
-    visited = [[0] * N for _ in range(N)]
-    visited[sr][sc] = 1
-    rr, rc = N, N
-    mn_dist = N*N
 
-    while q:
-        cr, cc, rank = q.popleft()
-        if arr[cr][cc] == 1:
-            if rank< mn_dist:
-                rr, rc = cr, cc
-                mn_dist = rank
-            elif rank == mn_dist and (rr, rc) > (cr, cc):
-                rr, rc = cr, cc
-            continue
-        for di, dj in DIR:
-            du, dv = cr + di, cc + dj
-            if oob(du, dv): continue
-            if visited[du][dv]: continue
-            q.append((du, dv, rank+1))
-            visited[du][dv] = 1
-
-    return rr, rc
 
 
 while arrived_cnt < M:
     time += 1
     # 이동
-    # print("=================움직이기 전 =====================")
-    # print(moving_lst)
+    arrived_lst = []
     for m in range(len(moving_lst)):
         if moving_lst[m] == -1:
             continue
 
         num, r, c = moving_lst[m]
         sr, sc = store_lst[num]
-        # print(f"움직일 애 : {num} = ({r}, {c})")
+
         nr, nc = get_move_loc(r, c, sr, sc)
-        # print(f"목적지 : ({sr}, {sc})")
 
         if nr == sr and nc == sc:
             arrived_cnt+=1
             moving_lst[m] = -1
-            arr[sr][sc] = -1
-
+            arrived_lst.append((sr, sc))
         else:
             moving_lst[m] = (num, nr, nc)
-    # print("=================움직인 후 =====================")
-    # print(moving_lst)
+
+    for x, y in arrived_lst:
+        arr[x][y] = -1
+
     # 새로운 애 투입
     if time <= M:
         sr, sc = store_lst[time]
