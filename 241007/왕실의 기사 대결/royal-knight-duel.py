@@ -100,6 +100,7 @@ def get_damage(num):
                 power_lst[num] -= 1
                 if power_lst[num] == 0:
                     die_gisa(num)
+                    return
 def die_gisa(num):
     r, c, h, w = gisa_lst[num]
     for i in range(r, r + h):
@@ -155,4 +156,9 @@ for q in range(Q):
         get_damage(pn)
 
     # printa("데미지 먹인 후 ", gisa_arr)
+    # print(power_lst)
+    # print(damage_lst)
+    # print(gisa_lst)
+
+
 print(sum(damage_lst))
