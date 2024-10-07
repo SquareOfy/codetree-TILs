@@ -51,7 +51,7 @@ def get_sul_loc():
         sd = go_dir_lst[s_idx]
     else:
         sr, sc = back_route_lst[s_idx]
-        sd = back_route_lst[s_idx]
+        sd = back_dir_lst[s_idx]
     return sr, sc, sd
 
 
@@ -137,6 +137,7 @@ back_dir_lst = [(i + 2) % 4 for i in go_dir_lst[N * N - 2::-1]] + [0]
 s_idx = 0
 answer = 0
 for k in range(1, K+1):
+    # print(f"===================turn : {k} ===================")
 
     sr, sc, sd = get_sul_loc()
     # 도망자 이동시키기
@@ -144,7 +145,7 @@ for k in range(1, K+1):
         if runner_lst[m] == -1: continue
         x, y, d = runner_lst[m]
         dist = calculate_d(x, y, sr, sc)
-
+        # print("이동가능한가? dist : ", dist)
         if dist > 3:
             continue
 
@@ -175,6 +176,7 @@ for k in range(1, K+1):
     sdi, sdj = DIR[sd]
 
     if s_idx==N*N-1:
+        s_idx = 0
         go_flag = not go_flag
     # print("술래 현 위치 ", sr, sc, sdi, sdj)
     for t in range(3):
