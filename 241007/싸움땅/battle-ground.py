@@ -154,15 +154,15 @@ for k in range(K):
             if gun_arr[lnr][lnc]:
                 gun_arr[lnr][lnc].sort()
                 player_gun_lst[loser] = gun_arr[lnr][lnc].pop()
-
-            #승자 총줍기
-            if player_gun_lst[winner]:
-                gun_arr[du][dv].append(player_gun_lst[winner])
-            gun_arr[du][dv].sort()
-            mx = gun_arr[du][dv].pop()
-            player_gun_lst[winner] = mx
-            player_loc_lst[winner] = (du, dv)
-            player_arr[du][dv] = winner
+            if gun_arr[du][dv]:
+                #승자 총줍기
+                if player_gun_lst[winner]:
+                    gun_arr[du][dv].append(player_gun_lst[winner])
+                gun_arr[du][dv].sort()
+                mx = gun_arr[du][dv].pop()
+                player_gun_lst[winner] = mx
+                player_loc_lst[winner] = (du, dv)
+                player_arr[du][dv] = winner
 
             # printa("싸웠다 !! ", player_arr)
             # printa("총 보자 ! ", gun_arr)
