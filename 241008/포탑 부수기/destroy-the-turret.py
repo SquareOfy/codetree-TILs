@@ -71,7 +71,7 @@ def attack(r, c, power):
     if arr[r][c] == 0:
         return
     arr[r][c] -= power
-    if arr[r][c] < 0:
+    if arr[r][c] <= 0:
         top_cnt-=1
         arr[r][c] = 0
 
@@ -132,6 +132,8 @@ for k in range(1, K+1):
     # print(lst)
     for r, c in lst:
         related[r][c] = 1
+        if arr[r][c]==0:
+            continue
         attack(r, c, arr[ar][ac]//2)
 
     #타겟 공격하기
