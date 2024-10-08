@@ -68,6 +68,8 @@ def laser_attack():
 
 def attack(r, c, power):
     global top_cnt
+    if arr[r][c] == 0:
+        return
     arr[r][c] -= power
     if arr[r][c] < 0:
         top_cnt-=1
@@ -82,12 +84,14 @@ def printa(string, arr):
 
 N, M, K = map(int, input().split())
 recent_attack = [[0]*M for _ in range(N)]
-top_cnt = 0
+top_cnt = N*M
 
 arr=  [list(map(int, input().split())) for _ in range(N)]
 DIR = (0, 1), (1, 0), (0, -1), (-1, 0)
 diagonal =[(-1, -1), (-1, 1), (1, -1), (1, 1)] + list(DIR)
 
+for i in range(N):
+    top_cnt -= arr[i].count(0)
 
 
 for k in range(1, K+1):
@@ -101,7 +105,7 @@ for k in range(1, K+1):
 
     #타겟 찾기 ( 공격자 제외할 것)
     tr, tc = find_target()
-
+    #
     # print("==============================")
     # print("ar, ac : ", ar, ac)
     # print("tr, tc : ", tr, tc)
@@ -125,6 +129,7 @@ for k in range(1, K+1):
             lst.append((du, dv))
     related = [[0]*M for _ in range(N)]
     related[ar][ac] = 1
+    # print(lst)
     for r, c in lst:
         related[r][c] = 1
         attack(r, c, arr[ar][ac]//2)
@@ -133,11 +138,14 @@ for k in range(1, K+1):
     attack(tr, tc, arr[ar][ac])
     related[tr][tc] = 1
     # printa("공격 후 arr ", arr)
+    # print(top_cnt)
 
     for r in range(N):
         for c in range(M):
             if not related[r][c] and arr[r][c] !=0:
                 arr[r][c] += 1
+    # printa("더한 후 ", arr)
+
 answer = 0
 for t in range(N):
     answer = max(answer, max(arr[t]))
