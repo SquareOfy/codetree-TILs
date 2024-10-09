@@ -51,6 +51,7 @@ for m in range(1, M + 1):
                     if arr[du][dv] > 0:
                         cnt += 1
                 arr[i][j] += cnt
+    # printa("나무 성장 후 ", arr)
     # 나무 번식
     tmp = [[0] * N for _ in range(N)]
     for i in range(N):
@@ -60,7 +61,7 @@ for m in range(1, M + 1):
             for di, dj in DIR:
                 du, dv = i + di, j + dj
                 if oob(du, dv): continue
-                if arr[du][dv] == 0 and (killed_arr[du][dv] == 0 or killed_arr[du][dv] - k > C):
+                if arr[du][dv] == 0 and (killed_arr[du][dv] == 0):
                     lst.append((du, dv))
             if not lst: continue
             v = arr[i][j] // len(lst)
@@ -71,14 +72,15 @@ for m in range(1, M + 1):
         for j in range(N):
             arr[i][j]+= tmp[i][j]
 
+    # printa("나무 번식 후 ", arr)
     killed_cnt = -1
     spray_R, spray_C = -1, -1
     lst = []
     # 제초제 뿌릴 위치 찾기
     for i in range(N):
         for j in range(N):
-            if arr[i][j] < 0: continue  # 벽
-            if killed_arr[i][j] != 0 and m - killed_arr[i][j] <= C: continue  # 제초제
+            if arr[i][j] <0: continue  # 벽
+            # if killed_arr[i][j] != 0 and m - killed_arr[i][j] <= C: continue  # 제초제
             cnt = arr[i][j]
             tmp_lst = [(i, j)]
             if cnt!=0:
@@ -94,15 +96,26 @@ for m in range(1, M + 1):
 
                         if arr[du][dv] <= 0:
                             break
+            # print("====================")
+            # print("i , j : ", i, j)
+            # print('죽이는 나무 수 : ', cnt)
+            # print(tmp_lst)
+            # print("=======================")
             if cnt > killed_cnt:
                 killed_cnt = cnt
                 lst = tmp_lst[:]
                 spray_R = i
                 spray_C = j
 
+    for i in range(N):
+        for j in range(N):
+            if killed_arr[i][j]:
+                killed_arr[i][j]-=1
     # 정해진 위치에 제초제 뿌리기
     for r, c in lst:
         if arr[r][c] > 0: arr[r][c] = 0
-        killed_arr[r][c] = m
+        killed_arr[r][c] = C
     answer += killed_cnt
+    # printa("제초제 뿌린 후 ", killed_arr)
+    # printa("제초제 뿌린 후 나무 ", arr)
 print(answer)
