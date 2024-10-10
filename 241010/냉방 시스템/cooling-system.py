@@ -98,6 +98,9 @@ for i in range(N):
         di, dj = DIR[d]
         ni, nj = i + di, j + dj
         if oob(ni, nj): continue
+        p = prime_dict[(di, dj)]
+        if wall_arr[i][j]%p==0:
+            continue
         bfs(ni, nj, d)
 
 # printa("default air : ", air_arr)
