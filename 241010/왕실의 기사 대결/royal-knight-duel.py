@@ -15,7 +15,8 @@ def is_possible(g_num, dk):
                 result = is_possible(gisa_arr[check_r][j], dk)
                 if not result:
                     return False
-                push_lst.append(gisa_arr[check_r][j])
+                if gisa_arr[check_r][j] not in push_lst:
+                    push_lst.append(gisa_arr[check_r][j])
     else:
         check_c = c - 1 if dj < 0 else c + w
         for i in range(r, r + h):
@@ -26,7 +27,8 @@ def is_possible(g_num, dk):
                 result = is_possible(gisa_arr[i][check_c], dk)
                 if not result:
                     return False
-                push_lst.append(gisa_arr[i][check_c])
+                if gisa_arr[i][check_c] not in push_lst:
+                    push_lst.append(gisa_arr[i][check_c])
 
     return True
 
@@ -45,19 +47,23 @@ def move_gisa(gNum, d):
         for i in range(r, r+h):
             gisa_arr[i][delete_c] = 0
             gisa_arr[i][append_c] = gNum
-
+    gisa_info[gNum] = (r+di, c+dj, h, w)
 
 def get_damage(gNum):
     r, c, h, w = gisa_info[gNum]
     damage = 0
     for i in range(r, r+h):
-        for j in range(c, c+h):
+        for j in range(c, c+w):
             if arr[i][j] == 1:
                 damage += 1
 
     if gisa_power[gNum]-damage <=0:
         gisa_damage[gNum] = 0
         gisa_power[gNum] = 0
+        for i in range(r, r+h):
+            for j in range(c, c+w):
+                arr[i][j] = 0
+
     else:
         gisa_damage[gNum] += damage
         gisa_power[gNum] -= damage
@@ -84,18 +90,17 @@ for n in range(1, N + 1):
 
 
 
-
 for q in range(Q):
     num, d = map(int, input().split())
     if gisa_power[num] <= 0: continue
     push_lst = []
     possible = is_possible(num, d)
     if not possible: continue
-
     for gNum in push_lst:
         move_gisa(gNum, d)
-
+    move_gisa(num, d)
     for gNum in push_lst:
         get_damage(gNum)
+
 
 print(sum(gisa_damage))
