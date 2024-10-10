@@ -51,7 +51,6 @@ def cal_dist(x, y, r, c):
     return (x-r)**2 + (y-c)**2
 
 def find_ru_move():
-    # 게임에서 탈락하지 않은 산타 중 가장 가까운 산타를 향해 1칸 돌진
 
     mn = N*N
     nsx, nsy = -1, -1
@@ -62,13 +61,11 @@ def find_ru_move():
         if dist<mn:
             mn = dist
             nsx, nsy = sx, sy
-        # 2명 이상이라면 r 좌표가 큰 산타->  c 좌표가 큰 산타를 향해 돌진
         elif dist==mn and (sx, sy) > (nsx, nsy):
             nsx, nsy = sx, sy
     mn = N*N
     result_di, result_dj = None, None
 
-    # 8방향 중 가장 가까워지는 방향으로 한 칸 돌진
     for di, dj in diagonal:
         nRx, nRy = rx+di, ry+dj
         if oob(nRx, nRy): continue
@@ -82,42 +79,27 @@ def find_ru_move():
 def kill_santa(s_num):
     die_lst[s_num] = 1
     x, y = santa_info[s_num]
-    santa_arr[x][y] = 0
+    # santa_arr[x][y] = 0
     santa_info[s_num] = -1
 
-
-def interact(di, dj, s_num):
-    sx, sy = santa_info[s_num]
-    nsx, nsy = sx+di, sy+dj
-    if oob(nsx, nsy):
-        kill_santa(s_num)
-        return
-    if santa_arr[nsx][nsy]:
-        interact(di, dj, santa_arr[nsx][nsy])
-
-    santa_arr[sx][sy] = 0
-    santa_arr[nsx][nsy]=s_num
-    santa_info[s_num] = (nsx, nsy)
-
-
-
 def crush(step, di, dj, s_num):
-    #현재 산타 위치
     Sx, Sy = santa_info[s_num]
-
-    #밀려날 위치
     nSx, nSy = Sx+step*di, Sy+step*dj
-
-    score_lst[s_num] += step #점수 더하기
+    santa_arr[Sx][Sy] = 0
+    score_lst[s_num] += step
     santa = s_num
+    while not oob(nSx, nSy) and santa_arr[nSx][nSy]:
+        tmp = santa_arr[nSx][nSy]
+        santa_arr[nSx][nSy] = santa
+        santa_info[santa] = (nSx, nSy)
+        santa = tmp
+        nSx+=di
+        nSy+=dj
     if oob(nSx, nSy):
+
         kill_santa(santa)
         return
-    if santa_arr[nSx][nSy]:
-        interact(di, dj, santa_arr[nSx][nSy])
-
-    santa_arr[Sx][Sy] = 0 #현재 위치 없애기
-    santa_arr[nSx][nSy] = s_num
+    santa_arr[nSx][nSy] = santa
     santa_info[santa] = (nSx, nSy)
 
 def printa(string, arr):
@@ -161,7 +143,6 @@ for m in range(1, M+1):
     if santa_arr[rx][ry]:
         sleep_lst[santa_arr[rx][ry]] = m
         crush(C, rdi, rdj, santa_arr[rx][ry])
-
 
     #산타 다 죽었나 확인하고 게임 종료
     if sum(die_lst) == P:
