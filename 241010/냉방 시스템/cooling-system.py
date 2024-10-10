@@ -12,7 +12,7 @@ def check_end():
     return True
 
 def bfs(r, c, dk):
-    air_arr[r][c] = 5
+    air_arr[r][c] += 5
     q = deque([(r, c, 4)])
     lst = air_dir_dict[dk]
     visited = [[0] * N for _ in range(N)]
@@ -126,7 +126,7 @@ while 1:
                 if wall_arr[i][j]%p ==0: continue
                 gap = abs(cool_arr[i][j]-cool_arr[du][dv])
                 if cool_arr[i][j]>cool_arr[du][dv]:
-                    tmp[i][j]-= gap//4
+                    tmp[i][j] -= gap//4
                     tmp[du][dv] += gap//4
                 else:
                     tmp[i][j] += gap//4
