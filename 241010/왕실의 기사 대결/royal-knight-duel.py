@@ -39,13 +39,15 @@ def move_gisa(gNum, d):
         delete_r = r+h-1 if di<0 else r
         append_r = r-1 if di<0 else r+h
         for j in range(c, c+w):
-            gisa_arr[delete_r][j] = 0
+            if gisa_arr[delete_r][j] == gNum:
+                gisa_arr[delete_r][j] = 0
             gisa_arr[append_r][j] = gNum
     else:
         delete_c = c + w - 1 if dj < 0 else c
         append_c = c - 1 if dj < 0 else c + w
         for i in range(r, r+h):
-            gisa_arr[i][delete_c] = 0
+            if gisa_arr[i][delete_c] == gNum:
+                gisa_arr[i][delete_c] = 0
             gisa_arr[i][append_c] = gNum
     gisa_info[gNum] = (r+di, c+dj, h, w)
 
@@ -62,7 +64,7 @@ def get_damage(gNum):
         gisa_power[gNum] = 0
         for i in range(r, r+h):
             for j in range(c, c+w):
-                arr[i][j] = 0
+                gisa_arr[i][j] = 0
 
     else:
         gisa_damage[gNum] += damage
@@ -99,8 +101,12 @@ for q in range(Q):
     for gNum in push_lst:
         move_gisa(gNum, d)
     move_gisa(num, d)
+    # print(num, push_lst)
     for gNum in push_lst:
         get_damage(gNum)
 
+    # for t in range(L):
+    #     print(gisa_arr[t])
+    # print()
 
 print(sum(gisa_damage))
