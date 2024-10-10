@@ -124,6 +124,8 @@ for k in range(1, K+1):
 
     runner_arr =[[[] for _ in range(N)] for _ in range(N)]
     for m in range(1, M+1):
+        if runner_info[m] == -1:
+            continue
         x, y, d = runner_info[m]
         runner_arr[x][y].append(m)
 
@@ -133,11 +135,13 @@ for k in range(1, K+1):
         s_idx = 0
 
     sr, sc = go_Route_lst[s_idx] if go_flag else back_Route_lst[s_idx]
-    sd = go_Dir_lst[s_idx] if go_flag else back_Route_lst[s_idx]
+    sd = go_Dir_lst[s_idx] if go_flag else back_Dir_lst[s_idx]
     sdi, sdj = DIR[sd]
     for t in range(3):
         nSr, nSc = sr+sdi*t, sc+sdj*t
         if oob(nSr, nSc): break
         if tree_arr[nSr][nSc]: continue
         answer += k*len(runner_arr[nSr][nSc])
+        for m in runner_arr[nSr][nSc]:
+            runner_info[m] = -1
 print(answer)
