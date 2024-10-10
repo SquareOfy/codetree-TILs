@@ -100,7 +100,7 @@ for i in range(N):
         if oob(ni, nj): continue
         bfs(ni, nj, d)
 
-
+# printa("default air : ", air_arr)
 time = 0
 while 1:
     if time>100:
@@ -122,6 +122,8 @@ while 1:
             for di, dj in (0, 1), (1, 0):
                 du, dv = i+di, j+dj
                 if oob(du, dv): continue
+                p = prime_dict[(di, dj)]
+                if wall_arr[i][j]%p ==0: continue
                 gap = abs(cool_arr[i][j]-cool_arr[du][dv])
                 if cool_arr[i][j]>cool_arr[du][dv]:
                     tmp[i][j]-= gap//4
