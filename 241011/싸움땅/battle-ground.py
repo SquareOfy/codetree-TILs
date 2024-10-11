@@ -125,7 +125,8 @@ for k in range(K):
                 change_gun(nlr, nlc, loser)
 
             #winner 총 교체
-            change_gun(du, dv, winner)
+            if gun_arr[du][dv]:
+                change_gun(du, dv, winner)
             #winner 자리 정리
             player_arr[du][dv] = winner
         # printa(f"{m}번 player 이동 후 PLAYER arr", player_arr)
