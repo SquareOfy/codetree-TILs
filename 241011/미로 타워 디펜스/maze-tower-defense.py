@@ -48,7 +48,10 @@ def delete_continuous(lst):
             bf = lst[i]
         else:
             tmp_lst.append(lst[i])
-    result_lst.extend(tmp_lst)
+    if len(tmp_lst)>=4:
+        answer += bf*len(tmp_lst)
+    else:
+        result_lst.extend(tmp_lst)
     return result_lst, flag
 
 
@@ -100,32 +103,22 @@ for m in range(M):
         if oob(r, c): break
         answer += arr[r][c]
         arr[r][c] = 0
+
+
     # 0제외한 숫자 목록
     lst = set_lst()
-    # print("공격 후 당긴 모습")
-    # print(lst)
-    # print("==================================")
-    # print()
+
 
     # lst에서 연속인 수 제거하고 당기기
     while 1:
         lst, flag = delete_continuous(lst)
+
         if not flag:
             break
 
-    # print("연쇄작용 이후 모습")
-    # print(lst)
-    #
-    # print("==========================")
-    # print()
     # 같은 수 체크해서 새로 lst만들기
     lst = make_new_lst(lst)
     arr = [[0] * N for _ in range(N)]
     set_arr(lst)
 
-    # print("새로운 리스트")
-    # print(lst)
-    #
-    # print("==========================")
-    # print()
 print(answer)
